@@ -3,6 +3,7 @@ import sys
 import shutil
 import subprocess
 from distutils.command.build import build as _build
+from distutils.command.build_ext import build_ext as _build_ext
 
 from distutils import log
 from setuptools import setup, find_packages, Extension
@@ -66,6 +67,13 @@ class VirgilBuild(_build):
     def cleanup_dir(path):
         shutil.rmtree(path, ignore_errors=True)
 
+class VirgilBuildExt(_build_ext):
+    def __init__(self, *args, **kwargs):
+        _build_ext.__init__(self, *args, **kwargs)
+
+    def run(self):
+        pass
+
 setup(
     name="virgil-crypto",
     version="1.0",
@@ -73,7 +81,8 @@ setup(
     long_description="Virgil keys service SDK",
     cmdclass={
         'build': VirgilBuild,
+        'build_ext': VirgilBuildExt,
     },
-    ext_modules=[Extension('virgil-crypto', [])],
+    ext_modules=[Extension('virgil_crypto_python', [])],
     ext_package='virgil.crypto'
 )
