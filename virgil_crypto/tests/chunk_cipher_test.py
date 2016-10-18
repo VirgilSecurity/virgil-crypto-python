@@ -1,10 +1,10 @@
 import io
 import unittest
 
-from virgil.crypto.virgil_crypto_python import VirgilChunkCipher
-from virgil.crypto.virgil_crypto_python import VirgilKeyPair
-from virgil.crypto.streams import VirgilStreamDataSink
-from virgil.crypto.streams import VirgilStreamDataSource
+from virgil_crypto.virgil_crypto_python import VirgilChunkCipher
+from virgil_crypto.virgil_crypto_python import VirgilKeyPair
+from virgil_crypto.streams import VirgilStreamDataSink
+from virgil_crypto.streams import VirgilStreamDataSource
 
 class VirgilChunkCipherTest(unittest.TestCase):
     def test_encrypts_and_decrypts_data(self):

@@ -1,7 +1,7 @@
 import io
 import unittest
 
-from virgil.crypto.virgil_crypto_python import VirgilKeyPair
+from virgil_crypto.virgil_crypto_python import VirgilKeyPair
 
 class VirgilKeyPairTest(unittest.TestCase):
     def test_generates_keys(self):

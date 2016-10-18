@@ -1,8 +1,8 @@
 import io
 import unittest
 
-from virgil.crypto.virgil_crypto_python import VirgilCipher
-from virgil.crypto.virgil_crypto_python import VirgilKeyPair
+from virgil_crypto.virgil_crypto_python import VirgilCipher
+from virgil_crypto.virgil_crypto_python import VirgilKeyPair
 
 class VirgilCipherTest(unittest.TestCase):
     def test_encrypts_and_decrypts_data(self):

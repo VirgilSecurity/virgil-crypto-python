@@ -1,9 +1,9 @@
 import io
 import unittest
 
-from virgil.crypto.virgil_crypto_python import VirgilKeyPair
-from virgil.crypto.virgil_crypto_python import VirgilStreamSigner
-from virgil.crypto.streams import VirgilStreamDataSource
+from virgil_crypto.virgil_crypto_python import VirgilKeyPair
+from virgil_crypto.virgil_crypto_python import VirgilStreamSigner
+from virgil_crypto.streams import VirgilStreamDataSource
 
 class VirgilStreamSignerTest(unittest.TestCase):
     def test_signs_and_verifies_data(self):

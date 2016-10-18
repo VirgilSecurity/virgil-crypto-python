@@ -38,8 +38,8 @@ class VirgilBuild(_build):
         crypto_dir = os.path.join(SCRIPT_DIR, "src", "virgil-crypto")
         os.chdir(crypto_dir)
         build_prefix = os.path.join(SCRIPT_DIR, "_build")
-        install_prefix = os.path.join(SCRIPT_DIR, "virgil")
-        install_dir = "crypto"
+        install_prefix = SCRIPT_DIR
+        install_dir = "virgil_crypto"
         VirgilBuild.cleanup_dir(build_prefix)
 
         cmake_build_command = [

@@ -1,5 +1,5 @@
-from virgil.crypto.virgil_crypto_python import VirgilDataSink
-from virgil.crypto.virgil_crypto_python import VirgilDataSource
+from virgil_crypto.virgil_crypto_python import VirgilDataSink
+from virgil_crypto.virgil_crypto_python import VirgilDataSource
 
 class VirgilStreamDataSink(VirgilDataSink):
     def __init__(self, stream):
