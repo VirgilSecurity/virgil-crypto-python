@@ -6,7 +6,7 @@ from distutils.command.build import build as _build
 from distutils.command.build_ext import build_ext as _build_ext
 
 from distutils import log
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, Extension
 
 try:
     THIS_FILE = __file__
@@ -72,17 +72,32 @@ class VirgilBuildExt(_build_ext):
         _build_ext.__init__(self, *args, **kwargs)
 
     def run(self):
-        pass
+        return
 
 setup(
     name="virgil-crypto",
-    version="1.0",
-    packages=find_packages(),
-    long_description="Virgil keys service SDK",
+    version="2.0.0a",
+    author="Virgil Security",
+    url="https://virgilsecurity.com/",
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "License :: OSI Approved :: BSD License",
+        "Natural Language :: English",
+        "Programming Language :: C++",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Topic :: Security :: Cryptography",
+    ],
+    license="BSD",
+    packages=["virgil_crypto"],
+    include_package_data=True,
+    zip_safe=False,
+    long_description="Virgil Crypto library wrapper",
     cmdclass={
         'build': VirgilBuild,
         'build_ext': VirgilBuildExt,
     },
-    ext_modules=[Extension('virgil_crypto_python', [])],
-    ext_package='virgil.crypto'
+    ext_modules=[Extension('_virgil_crypto_python', [])],
+    ext_package='virgil_crypto'
 )

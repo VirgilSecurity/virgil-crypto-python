@@ -1,0 +1,17 @@
+#
+# MANIFEST.in
+#
+# Manifest template for creating the virgil-crypto source distribution.
+
+include MANIFEST.in
+include README.md
+include setup.py
+
+# sources
+recursive-include src/virgil-crypto **
+# ignore .git
+recursive-exclude sources/virgil-crypto/.git **
+
+# package
+recursive-include virgil_crypto **
+recursive-exclude virgil_crypto *.pyc
