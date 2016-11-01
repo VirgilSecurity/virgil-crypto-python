@@ -3,4 +3,4 @@
 *.egg-info
 *.pyc
 _build/
-virgil/crypto/*virgil_crypto_python*
+virgil_crypto/*virgil_crypto_python*

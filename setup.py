@@ -76,7 +76,7 @@ class VirgilBuildExt(_build_ext):
 
 setup(
     name="virgil-crypto",
-    version="2.0.0a",
+    version="2.0.0a1",
     author="Virgil Security",
     url="https://virgilsecurity.com/",
     classifiers=[
