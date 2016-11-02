@@ -8,12 +8,12 @@ from virgil_crypto.streams import VirgilStreamDataSource
 
 class VirgilChunkCipherTest(unittest.TestCase):
     def test_encrypts_and_decrypts_data(self):
-        raw_data = bytearray('test')
+        raw_data = bytearray("test", "utf-8")
         key_pair1 = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
         key_pair2 = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
         cipher = VirgilChunkCipher()
-        cipher.addKeyRecipient(bytearray('1'), key_pair1.publicKey())
-        cipher.addKeyRecipient(bytearray('2'), key_pair2.publicKey())
+        cipher.addKeyRecipient(bytearray("1", "utf-8"), key_pair1.publicKey())
+        cipher.addKeyRecipient(bytearray("2", "utf-8"), key_pair2.publicKey())
         encrypt_input_stream = io.BytesIO(raw_data)
         encrypt_output_stream = io.BytesIO()
         encrypt_source = VirgilStreamDataSource(encrypt_input_stream)
@@ -28,7 +28,7 @@ class VirgilChunkCipherTest(unittest.TestCase):
         cipher.decryptWithKey(
             decrypt_source,
             decrypt_sink,
-            bytearray('1'),
+            bytearray("1", "utf-8"),
             key_pair1.privateKey()
         )
         decrypted_data1 = decrypt_output_stream.getvalue()
@@ -43,7 +43,7 @@ class VirgilChunkCipherTest(unittest.TestCase):
         cipher.decryptWithKey(
             decrypt_source,
             decrypt_sink,
-            bytearray('2'),
+            bytearray("2", "utf-8"),
             key_pair2.privateKey()
         )
         decrypted_data2 = decrypt_output_stream.getvalue()

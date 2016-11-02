@@ -5,6 +5,7 @@ import subprocess
 from distutils.command.build import build as _build
 from distutils.command.build_ext import build_ext as _build_ext
 
+from distutils.spawn import spawn
 from distutils import log
 from setuptools import setup, Extension
 
@@ -18,17 +19,54 @@ if os.path.dirname(THIS_FILE):
     os.chdir(os.path.dirname(THIS_FILE))
 SCRIPT_DIR = os.getcwd()
 
-def run_process(args):
-    process = subprocess.Popen(args, stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
-                               stdin=subprocess.PIPE)
-    while True:
-        output = process.stdout.readline()
-        if output == '' and process.poll() is not None:
-            break
-        if output:
-            log.info(output.strip())
-    return process.poll()
+def run_process(args, initial_env=None):
+    def _log(buffer, checkNewLine=False):
+        endsWithNewLine = False
+        if buffer.endswith('\n'):
+            endsWithNewLine = True
+        if checkNewLine and buffer.find('\n') == -1:
+            return buffer
+        lines = buffer.splitlines()
+        buffer = ''
+        if checkNewLine and not endsWithNewLine:
+            buffer = lines[-1]
+            lines = lines[:-1]
+        for line in lines:
+            log.info(line.rstrip('\r'))
+        return buffer
+
+    _log("Running process: {0}".format(" ".join([(" " in x and '"{0}"'.format(x) or x) for x in args])))
+
+    if sys.platform != "win32":
+        try:
+            spawn(args)
+            return 0
+        except DistutilsExecError:
+            return -1
+
+    shell = False
+    if sys.platform == "win32":
+        shell = True
+
+    if initial_env is None:
+        initial_env = os.environ
+
+    proc = popenasync.Popen(args,
+        stdin = subprocess.PIPE,
+        stdout = subprocess.PIPE,
+        stderr = subprocess.STDOUT,
+        universal_newlines = 1,
+        shell = shell,
+        env = initial_env)
+
+    log_buffer = None;
+    while proc.poll() is None:
+        log_buffer = _log(proc.read_async(wait=0.1, e=0))
+    if log_buffer:
+        _log(log_buffer)
+
+    proc.wait()
+    return proc.returncode
 
 class VirgilBuild(_build):
     def __init__(self, *args, **kwargs):

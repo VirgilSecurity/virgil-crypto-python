@@ -7,7 +7,7 @@ from virgil_crypto.streams import VirgilStreamDataSource
 
 class VirgilStreamSignerTest(unittest.TestCase):
     def test_signs_and_verifies_data(self):
-        raw_data = bytearray('test')
+        raw_data = bytearray("test", "utf-8")
         key_pair = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
         input_stream = io.BytesIO(raw_data)
         source = VirgilStreamDataSource(input_stream)

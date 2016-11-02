@@ -23,7 +23,7 @@ class VirgilKeyPairTest(unittest.TestCase):
         )
 
     def test_encrypts_and_decrypts_private_key(self):
-        password = bytearray("test")
+        password = bytearray("test", "utf-8")
         key_pair = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
         encrypted_private_key = VirgilKeyPair.encryptPrivateKey(
             key_pair.privateKey(),
