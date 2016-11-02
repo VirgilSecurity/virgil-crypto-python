@@ -114,11 +114,11 @@ class VirgilBuildExt(_build_ext):
 
 setup(
     name="virgil-crypto",
-    version="2.0.0a1",
+    version="2.0.0b0",
     author="Virgil Security",
     url="https://virgilsecurity.com/",
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Programming Language :: C++",
