@@ -1,7 +1,8 @@
 stage('Get Artifacts crypto lib python'){
     node('master'){
         clearContentUnix()
-
+        checkout scm
+        
         step ([$class: 'CopyArtifact', projectName: 'VirgilCryptoLib-Staging', filter: 'install/python/**']);
 
         stash excludes: '**/install/**', includes: '**', name: 'wrapper-source'
