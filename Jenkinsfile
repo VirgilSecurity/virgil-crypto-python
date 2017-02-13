@@ -4,10 +4,10 @@ stage('Get Artifacts crypto lib python'){
 
         step ([$class: 'CopyArtifact', projectName: 'VirgilCryptoLib-Staging', filter: 'install/python/**']);
 
-        stash includes: '**', excludes: '**/install/**', name: 'wrapper-source'
-        stash includes: 'install/python/virgil-crypto-**-linux**/**', excludes: '**.sha256', name: 'python-artifacts-linux'
-        stash includes: 'install/python/virgil-crypto-**-windows**/**', excludes: '**.sha256', name: 'python-artifacts-windows'
-        stash includes: 'install/python/virgil-crypto-**-darwin**/**', excludes: '**.sha256', name: 'python-artifacts-darwin'
+        stash excludes: '**/install/**', includes: '**', name: 'wrapper-source'
+        stash excludes: '*.sha256', includes: 'install/python/virgil-crypto-**-linux**', name: 'python-artifacts-linux'
+        stash excludes: '*.sha256', includes: 'install/python/virgil-crypto-**-windows**', name: 'python-artifacts-windows'
+        stash excludes: '*.sha256', includes: 'install/python/virgil-crypto-**-darwin**', name: 'python-artifacts-darwin'
     }
 }
 
