@@ -4,3 +4,4 @@
 *.pyc
 _build/
 virgil_crypto/*virgil_crypto_python*
+.idea
