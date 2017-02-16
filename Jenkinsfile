@@ -2,7 +2,7 @@ stage('Get Artifacts crypto lib python'){
     node('master'){
         clearContentUnix()
         checkout scm
-        
+
         step ([$class: 'CopyArtifact', projectName: 'VirgilCryptoLib-Staging', filter: 'install/python/**']);
 
         stash excludes: '**/install/**', includes: '**', name: 'wrapper-source'
@@ -59,7 +59,7 @@ def createLinuxWheels(slave, artifactType){
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4.4").inside("--user root"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -82,7 +82,7 @@ def createLinuxWheels(slave, artifactType){
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4.4").inside("--user root"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name linux_i686"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -113,7 +113,7 @@ def createLinuxWheels(slave, artifactType){
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4.4").inside("--user root"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name macosx_10_12_intel"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -162,7 +162,7 @@ def createLinuxWheels(slave, artifactType){
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4", "x64")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4.4").inside("--user root"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name win_amd64"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -193,7 +193,7 @@ def createLinuxWheels(slave, artifactType){
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4", "x86")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4.4").inside("--user root"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name win32"
                     cleanBuildDirectoriesLinux(copiedFiles)
