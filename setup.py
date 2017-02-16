@@ -1,23 +1,4 @@
-import os
-import sys
-import shutil
-import subprocess
-from distutils.command.build import build as _build
-from distutils.command.build_ext import build_ext as _build_ext
-
-from distutils.spawn import spawn
-from distutils import log
 from setuptools import setup, Extension
-
-try:
-    THIS_FILE = __file__
-except NameError:
-    THIS_FILE = sys.argv[0]
-THIS_FILE = os.path.abspath(THIS_FILE)
-
-if os.path.dirname(THIS_FILE):
-    os.chdir(os.path.dirname(THIS_FILE))
-SCRIPT_DIR = os.getcwd()
 
 setup(
     name="virgil-crypto",
@@ -30,6 +11,7 @@ setup(
         "Natural Language :: English",
         "Programming Language :: C++",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Topic :: Security :: Cryptography",
