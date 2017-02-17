@@ -1,4 +1,15 @@
-from setuptools import setup, Extension
+from setuptools import setup
+from setuptools.dist import Distribution
+
+
+class BinaryDistribution(Distribution):
+    """Distribution which always forces a binary package with platform name"""
+
+    def has_ext_modules(self):
+        return True
+
+    def is_pure(self):
+        return False
 
 setup(
     name="virgil-crypto",
@@ -21,6 +32,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
     long_description="Virgil Crypto library wrapper",
-    ext_modules=[Extension('_virgil_crypto_python', [])],
-    ext_package='virgil_crypto'
+    distclass=BinaryDistribution,
+    ext_package='virgil_crypto',
+    package_data={"virgil_crypto": ["_virgil_crypto_python.so", "virgil_crypto_python.py", "_virgil_crypto_python.pyd",
+                  "tests/*"]}
 )
