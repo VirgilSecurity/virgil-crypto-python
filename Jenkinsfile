@@ -3,7 +3,7 @@ stage('Get Artifacts crypto lib python'){
         clearContentUnix()
         checkout scm
 
-        step ([$class: 'CopyArtifact', projectName: 'VirgilCryptoLib-Staging', filter: 'install/python/**']);
+        step ([$class: 'CopyArtifact', projectName: 'VirgilCryptoLib-Production', filter: 'install/python/**']);
 
         stash excludes: '**/install/**', includes: '**', name: 'wrapper-source'
         stash excludes: '*.sha256', includes: 'install/python/virgil-crypto-**-linux**', name: 'python-artifacts-linux'
@@ -46,14 +46,14 @@ def createLinuxWheels(slave, artifactType){
                 //x64
                 copiedFiles = unpackCryptoArtifactsLinux('python-2.7')
                 docker.image("python:2.7").inside{
-                    sh "python setup.py bdist_wheel"
+                    sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.3")
                 docker.image("python:3.3").inside{
-                    sh "python setup.py bdist_wheel"
+                    sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
@@ -61,7 +61,7 @@ def createLinuxWheels(slave, artifactType){
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4")
                 docker.image("python:3.4.4").inside("--user root"){
                     sh "pip install wheel"
-                    sh "python setup.py bdist_wheel"
+                    sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
@@ -69,14 +69,14 @@ def createLinuxWheels(slave, artifactType){
                 //x86
                 copiedFiles = unpackCryptoArtifactsLinux('python-2.7')
                 docker.image("python:2.7").inside("--user root"){
-                    sh "python setup.py bdist_wheel --plat-name linux_i686"
+                    sh "python setup.py bdist_wheel --plat-name manylinux1_i686"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.3")
                 docker.image("python:3.3").inside{
-                    sh "python setup.py bdist_wheel --plat-name linux_i686"
+                    sh "python setup.py bdist_wheel --plat-name manylinux1_i686"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
@@ -84,14 +84,10 @@ def createLinuxWheels(slave, artifactType){
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4")
                 docker.image("python:3.4.4").inside("--user root"){
                     sh "pip install wheel"
-                    sh "python setup.py bdist_wheel --plat-name linux_i686"
+                    sh "python setup.py bdist_wheel --plat-name manylinux1_i686"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
-
-                dir("dist"){
-                    sh 'for file in *-cp27mu-*.whl; do cp $file ${file//cp27mu/cp27m}; done'
-                }
                 stash includes: "dist/**", name: "linux-artifacts"
             }
         }
