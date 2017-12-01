@@ -5,3 +5,5 @@
 _build/
 virgil_crypto/*virgil_crypto_python*
 .idea
+.vscode
+.DS_Store
