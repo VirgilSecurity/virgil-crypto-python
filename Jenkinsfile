@@ -5,7 +5,8 @@ stage('Get Artifacts crypto lib python'){
         clearContentUnix()
         checkout scm
 
-        step ([$class: 'CopyArtifact', projectName: "$CRYPTO_ARTIFACTS_NAME", filter: ['install/python/**', 'install/VERSION']]);
+        step ([$class: 'CopyArtifact', projectName: "$CRYPTO_ARTIFACTS_NAME", filter: 'install/python/**']);
+        step ([$class: 'CopyArtifact', projectName: "$CRYPTO_ARTIFACTS_NAME", filter: 'install/VERSION']);
         CRYPTO_VERSION = readFile("install/VERSION")
         sh "rm install/VERSION"
         stash excludes: '**/install/**', includes: '**', name: 'wrapper-source'
