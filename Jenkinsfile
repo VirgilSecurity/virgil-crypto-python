@@ -19,9 +19,9 @@ stage('Get Artifacts crypto lib python'){
 stage('Build'){
     echo("Version of Crypto build: $CRYPTO_VERSION")
     def slaves = [:]
-    slaves['native-linux'] = createLinuxWheels("build-docker", "linux")
-    slaves['native-darwin'] = createLinuxWheels("build-docker", "osx")
-    slaves['native-windows'] = createLinuxWheels("build-docker", "windows")
+    slaves['native-linux'] = createLinuxWheels("build-docker", "linux", CRYPTO_VERSION)
+    slaves['native-darwin'] = createLinuxWheels("build-docker", "osx", CRYPTO_VERSION)
+    slaves['native-windows'] = createLinuxWheels("build-docker", "windows", CRYPTO_VERSION)
     parallel slaves
 }
 
@@ -37,7 +37,7 @@ stage('Artifacts Packing'){
 
 // Utility Functions
 
-def createLinuxWheels(slave, artifactType){
+def createLinuxWheels(slave, artifactType, CRYPTO_VERSION){
     return{
         if (artifactType == "linux"){
             node(slave){
