@@ -1,10 +1,12 @@
+def CRYPTO_VERSION = "undefined"
+
 stage('Get Artifacts crypto lib python'){
     node('master'){
         clearContentUnix()
         checkout scm
 
         step ([$class: 'CopyArtifact', projectName: "$CRYPTO_ARTIFACTS_NAME", filter: 'install/python/**']);
-
+        CRYPTO_VERSION = readFile("VERSION")
         stash excludes: '**/install/**', includes: '**', name: 'wrapper-source'
         stash excludes: '*.sha256', includes: 'install/python/virgil-crypto-**-linux**', name: 'python-artifacts-linux'
         stash excludes: '*.sha256', includes: 'install/python/virgil-crypto-**-windows**', name: 'python-artifacts-windows'
@@ -13,6 +15,7 @@ stage('Get Artifacts crypto lib python'){
 }
 
 stage('Build'){
+    echo("Version of Crypto build: $CRYPTO_VERSION")
     def slaves = [:]
     slaves['native-linux'] = createLinuxWheels("build-docker", "linux")
     slaves['native-darwin'] = createLinuxWheels("build-docker", "osx")
@@ -45,35 +48,35 @@ def createLinuxWheels(slave, artifactType){
 
                 //x64
                 copiedFiles = unpackCryptoArtifactsLinux('python-2.7')
-                docker.image("python:2.7").inside{
+                docker.image("python:2.7").inside("--env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.3")
-                docker.image("python:3.3").inside{
+                docker.image("python:3.3").inside("--env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.5")
-                docker.image("python:3.5").inside("--user root"){
+                docker.image("python:3.5").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.6")
-                docker.image("python:3.6").inside("--user root"){
+                docker.image("python:3.6").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -82,35 +85,35 @@ def createLinuxWheels(slave, artifactType){
 
                 //x86
                 copiedFiles = unpackCryptoArtifactsLinux('python-2.7')
-                docker.image("python:2.7").inside("--user root"){
+                docker.image("python:2.7").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "python setup.py bdist_wheel --plat-name manylinux1_i686"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.3")
-                docker.image("python:3.3").inside{
+                docker.image("python:3.3").inside("--env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "python setup.py bdist_wheel --plat-name manylinux1_i686"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name manylinux1_i686"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.5")
-                docker.image("python:3.5").inside("--user root"){
+                docker.image("python:3.5").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name manylinux1_i686"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.6")
-                docker.image("python:3.6").inside("--user root"){
+                docker.image("python:3.6").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name manylinux1_i686"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -130,14 +133,14 @@ def createLinuxWheels(slave, artifactType){
                 def copiedFiles = []
 
                 copiedFiles = unpackCryptoArtifactsLinux('python-2.7')
-                docker.image("python:2.7").inside{
+                docker.image("python:2.7").inside("--env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "python setup.py bdist_wheel --plat-name macosx_10_12_intel"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name macosx_10_12_intel"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -145,14 +148,14 @@ def createLinuxWheels(slave, artifactType){
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.5")
-                docker.image("python:3.5").inside("--user root"){
+                docker.image("python:3.5").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name macosx_10_12_intel"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.6")
-                docker.image("python:3.6").inside("--user root"){
+                docker.image("python:3.6").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name macosx_10_12_intel"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -179,21 +182,21 @@ def createLinuxWheels(slave, artifactType){
 
                 //x64
                 copiedFiles = unpackCryptoArtifactsLinux('python-2.7', "x64")
-                docker.image("python:2.7").inside{
+                docker.image("python:2.7").inside("--env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "python setup.py bdist_wheel --plat-name win_amd64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.3", "x64")
-                docker.image("python:3.3").inside{
+                docker.image("python:3.3").inside("--env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "python setup.py bdist_wheel --plat-name win_amd64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4", "x64")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name win_amd64"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -201,14 +204,14 @@ def createLinuxWheels(slave, artifactType){
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.5", "x64")
-                docker.image("python:3.5").inside("--user root"){
+                docker.image("python:3.5").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name win_amd64"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.6", "x64")
-                docker.image("python:3.6").inside("--user root"){
+                docker.image("python:3.6").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name win_amd64"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -217,21 +220,21 @@ def createLinuxWheels(slave, artifactType){
 
                 //x86
                 copiedFiles = unpackCryptoArtifactsLinux('python-2.7', "x86")
-                docker.image("python:2.7").inside{
+                docker.image("python:2.7").inside("--env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "python setup.py bdist_wheel --plat-name win32"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.3", "x86")
-                docker.image("python:3.3").inside{
+                docker.image("python:3.3").inside("--env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "python setup.py bdist_wheel --plat-name win32"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.4", "x86")
-                docker.image("python:3.4").inside("--user root"){
+                docker.image("python:3.4").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name win32"
                     cleanBuildDirectoriesLinux(copiedFiles)
@@ -239,14 +242,14 @@ def createLinuxWheels(slave, artifactType){
 
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.5", "x86")
-                docker.image("python:3.5").inside("--user root"){
+                docker.image("python:3.5").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name win32"
                     cleanBuildDirectoriesLinux(copiedFiles)
                 }
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.6", "x86")
-                docker.image("python:3.6").inside("--user root"){
+                docker.image("python:3.6").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name win32"
                     cleanBuildDirectoriesLinux(copiedFiles)
