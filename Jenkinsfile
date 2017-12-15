@@ -6,7 +6,7 @@ stage('Get Artifacts crypto lib python'){
         checkout scm
 
         step ([$class: 'CopyArtifact', projectName: "$CRYPTO_ARTIFACTS_NAME", filter: 'install/python/**']);
-        CRYPTO_VERSION = readFile("VERSION")
+        CRYPTO_VERSION = readFile("install/VERSION")
         stash excludes: '**/install/**', includes: '**', name: 'wrapper-source'
         stash excludes: '*.sha256', includes: 'install/python/virgil-crypto-**-linux**', name: 'python-artifacts-linux'
         stash excludes: '*.sha256', includes: 'install/python/virgil-crypto-**-windows**', name: 'python-artifacts-windows'
