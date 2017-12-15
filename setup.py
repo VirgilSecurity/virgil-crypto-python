@@ -1,3 +1,4 @@
+import os
 from setuptools import setup
 from setuptools.dist import Distribution
 
@@ -13,7 +14,7 @@ class BinaryDistribution(Distribution):
 
 setup(
     name="virgil-crypto",
-    version="2.0.4",
+    version=os.getenv("CRYPTO_VERSION"),
     author="Virgil Security",
     url="https://virgilsecurity.com/",
     classifiers=[
@@ -25,6 +26,7 @@ setup(
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
         "Topic :: Security :: Cryptography",
     ],
     license="BSD",
@@ -34,6 +36,10 @@ setup(
     long_description="Virgil Crypto library wrapper",
     distclass=BinaryDistribution,
     ext_package='virgil_crypto',
-    package_data={"virgil_crypto": ["_virgil_crypto_python.so", "virgil_crypto_python.py", "_virgil_crypto_python.pyd",
-                  "tests/*"]}
+    package_data={"virgil_crypto": [
+        "_virgil_crypto_python.so",
+        "virgil_crypto_python.py",
+        "_virgil_crypto_python.pyd",
+        "tests/*"
+    ]}
 )
