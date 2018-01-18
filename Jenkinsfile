@@ -284,7 +284,6 @@ def createLinuxWheels(slave, artifactType, CRYPTO_VERSION){
                 //Fixing Python ABI tag
                 dir("dist"){
                     sh 'for file in *-cp27mu-*.whl; do mv $file ${file//cp27mu/cp27m}; done'
-                    sh 'for file in *-cp27mu-*.egg; do mv $file ${file//cp27mu/cp27m}; done'
                 }
 
                 stash includes: "dist/**", name: "windows-artifacts"
