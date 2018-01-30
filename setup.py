@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.dist import Distribution
 
 
@@ -30,12 +30,11 @@ setup(
         "Topic :: Security :: Cryptography",
     ],
     license="BSD",
-    packages=["virgil_crypto"],
     include_package_data=True,
     zip_safe=False,
     long_description="Virgil Crypto library wrapper",
     distclass=BinaryDistribution,
-    ext_package='virgil_crypto',
+    packages=find_packages(),
     package_data={"virgil_crypto": [
         "_virgil_crypto_python.so",
         "virgil_crypto_python.py",
@@ -43,3 +42,4 @@ setup(
         "tests/*"
     ]}
 )
+

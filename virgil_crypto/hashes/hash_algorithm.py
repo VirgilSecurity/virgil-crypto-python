@@ -32,37 +32,51 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import unittest
-
-from virgil_crypto.virgil_crypto_python import VirgilCipher
-from virgil_crypto.virgil_crypto_python import VirgilKeyPair
+import virgil_crypto
 
 
-class VirgilCipherTest(unittest.TestCase):
-    def test_encrypts_and_decrypts_data(self):
-        raw_data = bytearray("test", "utf-8")
-        key_pair1 = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
-        key_pair2 = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
-        cipher = VirgilCipher()
-        cipher.addKeyRecipient(bytearray("1", "utf-8"), key_pair1.publicKey())
-        cipher.addKeyRecipient(bytearray("2", "utf-8"), key_pair2.publicKey())
-        encrypted_data = cipher.encrypt(raw_data)
-        cipher = VirgilCipher()
-        decrypted_data1 = cipher.decryptWithKey(
-            encrypted_data,
-            bytearray("1", "utf-8"),
-            key_pair1.privateKey()
-        )
-        self.assertEqual(
-            raw_data,
-            bytearray(decrypted_data1)
-        )
-        decrypted_data2 = cipher.decryptWithKey(
-            encrypted_data,
-            bytearray("2", "utf-8"),
-            key_pair2.privateKey()
-        )
-        self.assertEqual(
-            raw_data,
-            bytearray(decrypted_data2)
-        )
+class HashAlgorithm(object):
+    """Enumeration containing supported Algorithms"""
+
+    class UnknownAlgorithmException(Exception):
+        """Exception raised when Unknown Algorithm passed to convertion method"""
+
+        def __init__(self, algorithm):
+            super(HashAlgorithm.UnknownAlgorithmException, self).__init__(algorithm)
+            self.algorithm = algorithm
+
+        def __str__(self):
+            return "KeyPairType not found: %i" % self.algorithm
+    MD5 = 0
+    SHA1 = 1
+    SHA224 = 2
+    SHA256 = 3
+    SHA384 = 4
+    SHA512 = 5
+
+    _ALGORITHMS_TO_NATIVE = {
+        MD5: virgil_crypto.VirgilHash.Algorithm_MD5,
+        SHA1: virgil_crypto.VirgilHash.Algorithm_SHA1,
+        SHA224: virgil_crypto.VirgilHash.Algorithm_SHA224,
+        SHA256: virgil_crypto.VirgilHash.Algorithm_SHA256,
+        SHA384: virgil_crypto.VirgilHash.Algorithm_SHA384,
+        SHA512: virgil_crypto.VirgilHash.Algorithm_SHA512,
+    }
+
+    @classmethod
+    def convert_to_native(cls, algorithm):
+        # type: (int) -> int
+        """Converts algorithm enum value to native value
+
+        Args:
+            algorithm: algorithm for conversion.
+
+        Returns:
+            Native library algorithm id.
+
+        Raises:
+            UnknownAlgorithmException: if algorithm is not supported.
+        """
+        if algorithm in cls._ALGORITHMS_TO_NATIVE:
+            return cls._ALGORITHMS_TO_NATIVE[algorithm]
+        raise cls.UnknownAlgorithmException(algorithm)
