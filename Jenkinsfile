@@ -179,8 +179,8 @@ def createLinuxWheels(slave, artifactType, CRYPTO_VERSION){
 
 
                 //Fixing Python ABI tag
-                dir("dist"){
-                    sh 'for file in *-cp27mu-*.whl; do mv $file ${file//cp27mu/cp27m}; done'
+                docker.image("python:2.7").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
+                    sh 'for file in dist/*-cp27mu-*.whl; do mv dist/$file dist/${file//cp27mu/cp27m}; done'
                 }
 
                 stash includes: "dist/**", name: "osx-artifacts"
@@ -282,8 +282,8 @@ def createLinuxWheels(slave, artifactType, CRYPTO_VERSION){
                 }
 
                 //Fixing Python ABI tag
-                dir("dist"){
-                    sh 'for file in *-cp27mu-*.whl; do mv $file ${file//cp27mu/cp27m}; done'
+                docker.image("python:2.7").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
+                    sh 'for file in dist/*-cp27mu-*.whl; do mv dist/$file dist/${file//cp27mu/cp27m}; done'
                 }
 
                 stash includes: "dist/**", name: "windows-artifacts"
