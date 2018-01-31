@@ -40,6 +40,7 @@ from virgil_crypto.virgil_crypto_python import VirgilKeyPair
 from virgil_crypto.streams import VirgilStreamDataSink
 from virgil_crypto.streams import VirgilStreamDataSource
 
+
 class VirgilChunkCipherTest(unittest.TestCase):
     def test_encrypts_and_decrypts_data(self):
         raw_data = bytearray("test", "utf-8")
