@@ -2,6 +2,8 @@ import os
 from setuptools import setup, find_packages
 from setuptools.dist import Distribution
 
+crypto_version = os.getenv("CRYPTO_VERSION").split(".")
+crypto_version[0] = crypto_version[0].replace("2", "3")
 
 class BinaryDistribution(Distribution):
     """Distribution which always forces a binary package with platform name"""
@@ -14,7 +16,7 @@ class BinaryDistribution(Distribution):
 
 setup(
     name="virgil-crypto",
-    version=".".join(os.getenv("CRYPTO_VERSION").split(".")[0].replace("2", "3")),
+    version=".".join(crypto_version),
     author="Virgil Security",
     url="https://virgilsecurity.com/",
     classifiers=[
