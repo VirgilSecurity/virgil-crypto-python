@@ -49,7 +49,7 @@ class CryptoTest(unittest.TestCase):
 
     def test_import_private_key(self):
         key_pair = self._crypto().generate_keys()
-        private_key_data = key_pair.private_key.value
+        private_key_data = key_pair.private_key.raw_key
         self.assertEqual(
             self._crypto().import_private_key(private_key_data),
             key_pair.private_key
@@ -57,7 +57,7 @@ class CryptoTest(unittest.TestCase):
 
     def test_import_public_key(self):
         key_pair = self._crypto().generate_keys()
-        public_key_data = key_pair.public_key.value
+        public_key_data = key_pair.public_key.raw_key
         self.assertEqual(
             self._crypto().import_public_key(public_key_data),
             key_pair.public_key
@@ -72,7 +72,7 @@ class CryptoTest(unittest.TestCase):
         )
         self.assertNotEqual(
             exported_private_key,
-            key_pair.private_key.value
+            key_pair.private_key.raw_key
         )
         imported_private_key = self._crypto().import_private_key(
             exported_private_key,
@@ -90,7 +90,7 @@ class CryptoTest(unittest.TestCase):
         )
         self.assertEqual(
             exported_public_key,
-            key_pair.public_key.value
+            key_pair.public_key.raw_key
         )
 
     def test_extract_public_key(self):

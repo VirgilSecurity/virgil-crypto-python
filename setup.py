@@ -14,7 +14,7 @@ class BinaryDistribution(Distribution):
 
 setup(
     name="virgil-crypto",
-    version=os.getenv("CRYPTO_VERSION"),
+    version=".".join(os.getenv("CRYPTO_VERSION").split(".")[0].replace("2", "3")),
     author="Virgil Security",
     url="https://virgilsecurity.com/",
     classifiers=[

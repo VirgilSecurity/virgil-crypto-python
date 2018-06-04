@@ -97,12 +97,12 @@ class VirgilCrypto(object):
         native_key_pair = VirgilKeyPair.generate(native_type)
         key_pair_id = self.compute_public_key_hash(native_key_pair.publicKey())
         private_key = PrivateKey(
-            receiver_id=key_pair_id,
-            value=VirgilKeyPair.privateKeyToDER(native_key_pair.privateKey())
+            identifier=key_pair_id,
+            raw_key=VirgilKeyPair.privateKeyToDER(native_key_pair.privateKey())
         )
         public_key = PublicKey(
-            receiver_id=key_pair_id,
-            value=VirgilKeyPair.publicKeyToDER(native_key_pair.publicKey())
+            identifier=key_pair_id,
+            raw_key=VirgilKeyPair.publicKeyToDER(native_key_pair.publicKey())
         )
         return KeyPair(private_key=private_key, public_key=public_key)
 
@@ -129,7 +129,7 @@ class VirgilCrypto(object):
         public_key_data = VirgilKeyPair.extractPublicKey(decrypted_private_key, [])
         key_pair_id = self.compute_public_key_hash(public_key_data)
         private_key_data = VirgilKeyPair.privateKeyToDER(decrypted_private_key)
-        return PrivateKey(receiver_id=key_pair_id, value=private_key_data)
+        return PrivateKey(identifier=key_pair_id, raw_key=private_key_data)
 
     def import_public_key(self, key_data):
         # type: (Union[Tuple[int], List[int]]) -> PublicKey
@@ -143,7 +143,7 @@ class VirgilCrypto(object):
         """
         key_pair_id = self.compute_public_key_hash(key_data)
         public_key_data = VirgilKeyPair.publicKeyToDER(key_data)
-        return PublicKey(receiver_id=key_pair_id, value=public_key_data)
+        return PublicKey(identifier=key_pair_id, raw_key=public_key_data)
 
     def export_private_key(self, private_key, password=None):
         # type: (PrivateKey, Optional[str]) -> Tuple[int]
@@ -157,11 +157,11 @@ class VirgilCrypto(object):
             Key material representation bytes.
         """
         if not password:
-            return VirgilKeyPair.privateKeyToDER(private_key.value)
+            return VirgilKeyPair.privateKeyToDER(private_key.raw_key)
 
         password_bytes = self.strtobytes(password)
         private_key_data = VirgilKeyPair.encryptPrivateKey(
-            private_key.value,
+            private_key.raw_key,
             password_bytes
         )
         return VirgilKeyPair.privateKeyToDER(private_key_data, password_bytes)
@@ -177,7 +177,7 @@ class VirgilCrypto(object):
         Returns:
             Key material representation bytes.
         """
-        return VirgilKeyPair.publicKeyToDER(public_key.value)
+        return VirgilKeyPair.publicKeyToDER(public_key.raw_key)
 
     @staticmethod
     def extract_public_key(private_key):
@@ -190,10 +190,10 @@ class VirgilCrypto(object):
         Returns:
             Exported public key.
         """
-        public_key_data = VirgilKeyPair.extractPublicKey(private_key.value, [])
+        public_key_data = VirgilKeyPair.extractPublicKey(private_key.raw_key, [])
         public_key = PublicKey(
-            receiver_id=private_key.receiver_id,
-            value=VirgilKeyPair.publicKeyToDER(public_key_data)
+            identifier=private_key.identifier,
+            raw_key=VirgilKeyPair.publicKeyToDER(public_key_data)
         )
         return public_key
 
@@ -211,7 +211,7 @@ class VirgilCrypto(object):
         """
         cipher = VirgilCipher()
         for public_key in recipients:
-            cipher.addKeyRecipient(public_key.receiver_id, public_key.value)
+            cipher.addKeyRecipient(public_key.identifier, public_key.raw_key)
         return cipher.encrypt(data)
 
     @staticmethod
@@ -229,8 +229,8 @@ class VirgilCrypto(object):
         cipher = VirgilCipher()
         decrypted_data = cipher.decryptWithKey(
             cipher_data,
-            private_key.receiver_id,
-            private_key.value
+            private_key.identifier,
+            private_key.raw_key
         )
         return decrypted_data
 
@@ -248,7 +248,7 @@ class VirgilCrypto(object):
             Signed and encrypted data bytes.
         """
         signer = VirgilSigner(self.signature_hash_algorithm)
-        signature = signer.sign(data, private_key.value)
+        signature = signer.sign(data, private_key.raw_key)
         cipher = VirgilCipher()
         custom_data = cipher.customParams()
         custom_data.setData(
@@ -256,7 +256,7 @@ class VirgilCrypto(object):
             signature
         )
         for public_key in recipients:
-            cipher.addKeyRecipient(public_key.receiver_id, public_key.value)
+            cipher.addKeyRecipient(public_key.identifier, public_key.raw_key)
         return cipher.encrypt(data)
 
     def decrypt_then_verify(self, data, private_key, public_key):
@@ -277,8 +277,8 @@ class VirgilCrypto(object):
         cipher = VirgilCipher()
         decrypted_data = cipher.decryptWithKey(
             data,
-            private_key.receiver_id,
-            private_key.value
+            private_key.identifier,
+            private_key.raw_key
         )
         signature = cipher.customParams().getData(self.custom_param_key_signature)
         is_valid = self.verify(decrypted_data, signature, public_key)
@@ -298,7 +298,7 @@ class VirgilCrypto(object):
             Signature bytes.
         """
         signer = VirgilSigner(self.signature_hash_algorithm)
-        signature = signer.sign(data, private_key.value)
+        signature = signer.sign(data, private_key.raw_key)
         return signature
 
     def verify(self, data, signature, signer_public_key):
@@ -314,7 +314,7 @@ class VirgilCrypto(object):
             True if signature is valid, False otherwise.
         """
         signer = VirgilSigner(self.signature_hash_algorithm)
-        is_valid = signer.verify(data, signature, signer_public_key.value)
+        is_valid = signer.verify(data, signature, signer_public_key.raw_key)
         return is_valid
 
     @staticmethod
@@ -329,10 +329,9 @@ class VirgilCrypto(object):
 
         """
 
-        # cipher = VirgilChunkCipher()
         cipher = VirgilStreamCipher()
         for public_key in recipients:
-            cipher.addKeyRecipient(public_key.receiver_id, public_key.value)
+            cipher.addKeyRecipient(public_key.identifier, public_key.raw_key)
         source = VirgilStreamDataSource(input_stream)
         sink = VirgilStreamDataSink(output_stream)
         cipher.encrypt(source, sink)
@@ -348,15 +347,14 @@ class VirgilCrypto(object):
             private_key: private key for decryption.
 
         """
-        # cipher = VirgilChunkCipher()
         cipher = VirgilStreamCipher()
         source = VirgilStreamDataSource(input_stream)
         sink = VirgilStreamDataSink(output_stream)
         cipher.decryptWithKey(
             source,
             sink,
-            private_key.receiver_id,
-            private_key.value
+            private_key.identifier,
+            private_key.raw_key
         )
 
     def sign_stream(self, input_stream, private_key):
@@ -372,7 +370,7 @@ class VirgilCrypto(object):
         """
         signer = VirgilStreamSigner(self.signature_hash_algorithm)
         source = VirgilStreamDataSource(input_stream)
-        signature = signer.sign(source, private_key.value)
+        signature = signer.sign(source, private_key.raw_key)
         return signature
 
     def verify_stream(self, input_stream, signature, signer_public_key):
@@ -389,7 +387,7 @@ class VirgilCrypto(object):
         """
         signer = VirgilStreamSigner(self.signature_hash_algorithm)
         source = VirgilStreamDataSource(input_stream)
-        is_valid = signer.verify(source, signature, signer_public_key.value)
+        is_valid = signer.verify(source, signature, signer_public_key.raw_key)
         return is_valid
 
     def calculate_fingerprint(self, data):
