@@ -5,6 +5,7 @@ from setuptools.dist import Distribution
 crypto_version = os.getenv("CRYPTO_VERSION").split(".")
 crypto_version[0] = crypto_version[0].replace("2", "3")
 
+
 class BinaryDistribution(Distribution):
     """Distribution which always forces a binary package with platform name"""
 
@@ -13,6 +14,7 @@ class BinaryDistribution(Distribution):
 
     def is_pure(self):
         return False
+
 
 setup(
     name="virgil-crypto",
