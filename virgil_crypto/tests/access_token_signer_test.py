@@ -40,7 +40,7 @@ class AccessTokenSignerTest(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super(AccessTokenSignerTest, self).__init__(*args, **kwargs)
-        self.token = "test_token".encode()
+        self.token = bytearray("test_token".encode())
         self.signer = AccessTokenSigner()
         key_pair = self.signer.crypto.generate_keys()
         self.private_key = key_pair.private_key

@@ -44,7 +44,7 @@ class CardCryptoTest(unittest.TestCase):
         super(CardCryptoTest, self).__init__(*args, **kwargs)
         self.card_crypto = CardCrypto()
         self.test_text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-        self.test_data = self.test_text.encode()
+        self.test_data = bytearray(self.test_text.encode())
         self.key_pair = self.card_crypto.crypto.generate_keys()
         self.public_key = self.key_pair.public_key
         self.private_key = self.key_pair.private_key
