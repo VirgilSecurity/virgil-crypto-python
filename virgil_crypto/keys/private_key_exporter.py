@@ -49,7 +49,7 @@ class PrivateKeyExporter(object):
         self.__password = password
 
     def export_private_key(self, private_key):
-        # type: (PrivateKey) -> None
+        # type: (PrivateKey) -> Union[bytes, bytearray]
         """
         Exports the PrivateKey into material representation. If PrivateKeyExporter was
         instantiated with password then it will be used to export private key.
@@ -59,9 +59,9 @@ class PrivateKeyExporter(object):
             Private key in material representation of bytes.
         """
         if self.__password:
-            self.crypto.export_private_key(private_key, self.__password)
+            return self.crypto.export_private_key(private_key, self.__password)
         else:
-            self.crypto.export_private_key(private_key)
+            return self.crypto.export_private_key(private_key)
 
     def import_private_key(self, key_data):
         # type: (Union[bytes, bytearray]) -> PrivateKey
