@@ -34,7 +34,7 @@
 import unittest
 
 from virgil_crypto import VirgilCrypto
-from virgil_crypto.keys.private_key_exporter import PrivateKeyExporter
+from virgil_crypto.private_key_exporter import PrivateKeyExporter
 
 
 class PrivateKeyExporterTest(unittest.TestCase):

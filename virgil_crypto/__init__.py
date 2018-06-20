@@ -35,3 +35,4 @@
 from .virgil_crypto_python import *
 from .streams import *
 from .crypto import VirgilCrypto
+from .private_key_exporter import PrivateKeyExporter
