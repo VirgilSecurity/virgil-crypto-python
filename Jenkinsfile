@@ -7,7 +7,11 @@ stage('Get Artifacts crypto lib python'){
 
         step ([$class: 'CopyArtifact', projectName: "$CRYPTO_ARTIFACTS_NAME", filter: 'install/python/**']);
         step ([$class: 'CopyArtifact', projectName: "$CRYPTO_ARTIFACTS_NAME", filter: 'install/VERSION']);
-        CRYPTO_VERSION = readFile("install/VERSION")
+        if ("$CRYPTO_VERSION" != "Default"){
+            CRYPTO_VERSION = "$CRYPTO_VERSION"
+        } else {
+            CRYPTO_VERSION = readFile("install/VERSION")
+        }
         sh "rm install/VERSION"
         stash excludes: '**/install/**', includes: '**', name: 'wrapper-source'
         stash excludes: '*.sha256', includes: 'install/python/virgil-crypto-**-linux**', name: 'python-artifacts-linux'

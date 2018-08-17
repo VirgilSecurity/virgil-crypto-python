@@ -56,7 +56,7 @@ class VirgilCrypto(object):
 
     """
     def __init__(self):
-        self.signature_hash_algorithm = HashAlgorithm.SHA384
+        self.signature_hash_algorithm = HashAlgorithm.SHA512
         self.key_pair_type = KeyPairType.Default
 
     _CUSTOM_PARAM_KEY_SIGNATURE = None
