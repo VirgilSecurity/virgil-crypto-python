@@ -15,7 +15,7 @@ install:
   - pip install virgil-crypto
 
 script:
-  - python -m unittest discover virgil_crypto.tests -p "*_test.py"
+  - cd virgil_crypto/tests && python -m unittest discover virgil_crypto.tests -p "*_test.py"
 
 notifications:
   email:
