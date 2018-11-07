@@ -51,7 +51,8 @@ setup(
         "_virgil_crypto_python.so",
         "virgil_crypto_python.py",
         "_virgil_crypto_python.pyd",
-        "tests/*"
+        "tests/*",
+        "tests/data/*.json"
     ]}
 )
 
