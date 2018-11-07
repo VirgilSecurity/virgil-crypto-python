@@ -7,10 +7,8 @@ stage('Get Artifacts crypto lib python'){
 
         step ([$class: 'CopyArtifact', projectName: "$CRYPTO_ARTIFACTS_NAME", filter: 'install/python/**']);
         step ([$class: 'CopyArtifact', projectName: "$CRYPTO_ARTIFACTS_NAME", filter: 'install/VERSION']);
-        if ("$CRYPTO_VERSION" != "Default"){
-            CRYPTO_VERSION = "$CRYPTO_VERSION"
-        } else {
-            CRYPTO_VERSION = readFile("install/VERSION")
+        if ("${env.CRYPTO_VERSION}" == "Default"){
+            env.CRYPTO_VERSION = readFile("install/VERSION")
         }
         sh "rm install/VERSION"
         stash excludes: '**/install/**', includes: '**', name: 'wrapper-source'
@@ -86,6 +84,14 @@ def createLinuxWheels(slave, artifactType, CRYPTO_VERSION){
                 }
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.6")
+                docker.image("python:3.6").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
+                    sh "pip install wheel"
+                    sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
+                    sh "python setup.py bdist_egg --plat-name manylinux1_x86_64"
+                    cleanBuildDirectoriesLinux(copiedFiles)
+                }
+
+                copiedFiles = unpackCryptoArtifactsLinux("python-3.7")
                 docker.image("python:3.6").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
