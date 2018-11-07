@@ -92,10 +92,12 @@ class CompatibilityTest(unittest.TestCase):
         data = self._compatibility_data["generate_signature"]
         private_key = self._crypto.import_private_key(data["private_key"])
         signature = self._crypto.sign(data["original_data"], private_key)
-        self.assertEqual(data["signature"], signature)
         public_key = self._crypto.extract_public_key(private_key)
         self.assertTrue(
             self._crypto.verify(data["original_data"], data["signature"], public_key)
+        )
+        self.assertTrue(
+            self._crypto.verify(data["original_data"], signature, public_key)
         )
 
     @property

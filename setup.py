@@ -31,6 +31,7 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Topic :: Security :: Cryptography",
     ],
     license="BSD",
@@ -50,7 +51,8 @@ setup(
         "_virgil_crypto_python.so",
         "virgil_crypto_python.py",
         "_virgil_crypto_python.pyd",
-        "tests/*"
+        "tests/*",
+        "tests/data/*.json"
     ]}
 )
 

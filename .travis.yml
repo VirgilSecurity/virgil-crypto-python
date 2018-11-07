@@ -1,0 +1,22 @@
+language: python
+
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+
+virtualenv:
+  system_site_packages: true
+
+install:
+  - pip install virgil-crypto
+
+script:
+  - cd virgil_crypto/tests && python -m unittest discover virgil_crypto.tests -p "*_test.py"
+
+notifications:
+  email:
+  - const_ant_in@virgilsecurity.com
