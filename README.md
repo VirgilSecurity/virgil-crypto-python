@@ -108,7 +108,7 @@ pip install virgil-crypto
 ```
 
 ## Docs
-- [API Reference](http://virgilsecurity.github.io/virgil-crypto-javascript/)
+- [API Reference](http://virgilsecurity.github.io/crypto-python/)
 - [Crypto Core Library](https://github.com/VirgilSecurity/virgil-crypto)
 - [More usage examples](https://developer.virgilsecurity.com/docs/how-to#cryptography)
 
