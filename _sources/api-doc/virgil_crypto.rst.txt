@@ -52,14 +52,6 @@ virgil\_crypto.streams module
     :undoc-members:
     :show-inheritance:
 
-virgil\_crypto.virgil\_crypto\_python module
---------------------------------------------
-
-.. automodule:: virgil_crypto.virgil_crypto_python
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------
