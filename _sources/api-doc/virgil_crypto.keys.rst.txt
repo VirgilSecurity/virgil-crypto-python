@@ -1,0 +1,46 @@
+virgil\_crypto.keys package
+===========================
+
+Submodules
+----------
+
+virgil\_crypto.keys.key\_pair module
+------------------------------------
+
+.. automodule:: virgil_crypto.keys.key_pair
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto.keys.key\_pair\_type module
+------------------------------------------
+
+.. automodule:: virgil_crypto.keys.key_pair_type
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto.keys.private\_key module
+---------------------------------------
+
+.. automodule:: virgil_crypto.keys.private_key
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto.keys.public\_key module
+--------------------------------------
+
+.. automodule:: virgil_crypto.keys.public_key
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: virgil_crypto.keys
+    :members:
+    :undoc-members:
+    :show-inheritance:

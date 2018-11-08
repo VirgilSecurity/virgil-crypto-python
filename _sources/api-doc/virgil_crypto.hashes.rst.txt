@@ -1,0 +1,30 @@
+virgil\_crypto.hashes package
+=============================
+
+Submodules
+----------
+
+virgil\_crypto.hashes.fingerprint module
+----------------------------------------
+
+.. automodule:: virgil_crypto.hashes.fingerprint
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto.hashes.hash\_algorithm module
+--------------------------------------------
+
+.. automodule:: virgil_crypto.hashes.hash_algorithm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: virgil_crypto.hashes
+    :members:
+    :undoc-members:
+    :show-inheritance:

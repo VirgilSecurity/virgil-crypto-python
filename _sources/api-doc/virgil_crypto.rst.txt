@@ -1,0 +1,70 @@
+virgil\_crypto package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    virgil_crypto.hashes
+    virgil_crypto.keys
+
+Submodules
+----------
+
+virgil\_crypto.access\_token\_signer module
+-------------------------------------------
+
+.. automodule:: virgil_crypto.access_token_signer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto.card\_crypto module
+----------------------------------
+
+.. automodule:: virgil_crypto.card_crypto
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto.crypto module
+----------------------------
+
+.. automodule:: virgil_crypto.crypto
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto.private\_key\_exporter module
+--------------------------------------------
+
+.. automodule:: virgil_crypto.private_key_exporter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto.streams module
+-----------------------------
+
+.. automodule:: virgil_crypto.streams
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto.virgil\_crypto\_python module
+--------------------------------------------
+
+.. automodule:: virgil_crypto.virgil_crypto_python
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: virgil_crypto
+    :members:
+    :undoc-members:
+    :show-inheritance:

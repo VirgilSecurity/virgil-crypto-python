@@ -1,0 +1,101 @@
+virgil\_crypto\.tests package
+=============================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    virgil_crypto.tests.hashes
+
+Submodules
+----------
+
+virgil\_crypto\.tests\.access\_token\_signer\_test module
+---------------------------------------------------------
+
+.. automodule:: virgil_crypto.tests.access_token_signer_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto\.tests\.card\_crypto\_test module
+------------------------------------------------
+
+.. automodule:: virgil_crypto.tests.card_crypto_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto\.tests\.chunk\_cipher\_test module
+-------------------------------------------------
+
+.. automodule:: virgil_crypto.tests.chunk_cipher_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto\.tests\.cipher\_test module
+------------------------------------------
+
+.. automodule:: virgil_crypto.tests.cipher_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto\.tests\.compatibility\_test module
+-------------------------------------------------
+
+.. automodule:: virgil_crypto.tests.compatibility_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto\.tests\.crypto\_test module
+------------------------------------------
+
+.. automodule:: virgil_crypto.tests.crypto_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto\.tests\.private\_key\_exporter\_test module
+----------------------------------------------------------
+
+.. automodule:: virgil_crypto.tests.private_key_exporter_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto\.tests\.signer\_test module
+------------------------------------------
+
+.. automodule:: virgil_crypto.tests.signer_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto\.tests\.stream\_signer\_test module
+--------------------------------------------------
+
+.. automodule:: virgil_crypto.tests.stream_signer_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+virgil\_crypto\.tests\.virgil\_key\_pair\_test module
+-----------------------------------------------------
+
+.. automodule:: virgil_crypto.tests.virgil_key_pair_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: virgil_crypto.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
