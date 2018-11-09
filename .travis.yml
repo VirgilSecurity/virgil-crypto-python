@@ -21,7 +21,8 @@ install:
   - cd virgil_crypto && tar xzf ../*.tgz --strip=2 --wildcards "*.py" "*.so" -C virgil_crypto/
 
 script:
-  - cd virgil_crypto && python -m unittest discover -p "*_test.py"
+  - pwd
+  - python -m unittest discover -p "*_test.py"
 
 notifications:
   email:
