@@ -17,7 +17,7 @@ python:
   - "3.7"
 
 install:
-  - wget https://cdn.virgilsecurity.com/${CDN_ARTIFACTS}/VERSION
+  - wget "https://cdn.virgilsecurity.com/${CDN_ARTIFACTS}/VERSION"
   - sed -i -e 's/-dev//g' VERSION
   - echo "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
   - wget -np -nd -r https://cdn.virgilsecurity.com/${CDN_ARTIFACTS}/python/ -A "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
