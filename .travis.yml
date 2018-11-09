@@ -14,7 +14,7 @@ env:
   global:
     - CDN_ARTIFACTS=$([ "$TRAVIS_BRANCH" == "master" ] && echo "virgil-crypto" || echo "virgil-crypto-dev")
     - OS_NAME=$(echo $TRAVIS_OS_NAME)
-    - PYTHON_VERSION=$(echo "${TRAVIS_PYTHON_VERSION}" | sed -e 's/-dev//g')
+    - PYTHON_VERSION=$(echo "${TRAVIS_PYTHON_VERSION}" | sed -i -e 's/-dev//g')
 
 matrix:
   include:
@@ -56,7 +56,7 @@ install:
   - echo $TRAVIS_PYTHON_VERSION
   - echo $PYTHON_VERSION
   - wget https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/VERSION
-  - sed -e 's/-dev//g' VERSION
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then sed -e 's/-dev//g' VERSION; else then sed -i -e 's/-dev//g' VERSION; fi
   - echo "virgil-crypto-$(cat VERSION)-python-${PYTHON_VERSION}-${OS_NAME}-*x86_64.tgz"
   - wget -np -nd -r https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/python/ -A "virgil-crypto-$(cat VERSION)-python-${PYTHON_VERSION}-${OS_NAME}-*x86_64.tgz"
   - cd virgil_crypto && tar xzf ../*.tgz --strip=2
