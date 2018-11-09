@@ -16,12 +16,48 @@ env:
   global:
     - CDN_ARTIFACTS=$([ "$TRAVIS_BRANCH" == "master" ] && echo "virgil-crypto" || echo "virgil-crypto-dev")
     - OS_NAME=$([ "$TRAVIS_OS_NAME" == "osx" ] && echo "darwin" || echo ${TRAVIS_OS_NAME})
+    - PYTHON_VERSION=$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/-dev//g')
+
+matrix:
+  include:
+    - os: osx
+      language: generic
+      env: PYTHON=2.7.15 PYTHON_VERSION=2.7
+    - os: osx
+      language: generic
+      env: PYTHON=3.3.7 PYTHON_VERSION=3.3
+    - os: osx
+      language: generic
+      env: PYTHON=3.4.9 PYTHON_VERSION=3.4
+    - os: osx
+      language: generic
+      env: PYTHON=3.5.6 PYTHON_VERSION=3.5
+    - os: osx
+      language: generic
+      env: PYTHON=3.6.7 PYTHON_VERSION=3.6
+    - os: osx
+      language: generic
+      env: PYTHON=3.7.1 PYTHON_VERSION=3.7
+
+before_install: |
+  if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    brew update
+    brew install openssl readline
+    brew outdated pyenv || brew upgrade pyenv
+    brew install pyenv-virtualenv
+    pyenv install $PYTHON
+    export PYENV_VERSION=$PYTHON
+    export PATH="/Users/travis/.pyenv/shims:${PATH}"
+    pyenv-virtualenv venv
+    source venv/bin/activate
+    python --version
+  fi
 
 install:
   - wget https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/VERSION
   - sed -i -e 's/-dev//g' VERSION
-  - echo "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
-  - wget -np -nd -r https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/python/ -A "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
+  - echo "virgil-crypto-$(cat VERSION)-python-${PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
+  - wget -np -nd -r https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/python/ -A "virgil-crypto-$(cat VERSION)-python-${PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
   - cd virgil_crypto && tar xzf ../*.tgz --strip=2 --wildcards "*.py" "*.so"
   - ls -la
   - cd ..
