@@ -13,8 +13,9 @@ python:
   - "3.7"
 
 env:
-  - CDN_ARTIFACTS=$([ "$TRAVIS_BRANCH" == "master" ] && echo "virgil-crypto" || echo "virgil-crypto-dev")
-  - OS_NAME=$([ "$TRAVIS_OS_NAME" == "osx" ] && echo "darwin" || echo ${TRAVIS_OS_NAME})
+  global:
+    - CDN_ARTIFACTS=$([ "$TRAVIS_BRANCH" == "master" ] && echo "virgil-crypto" || echo "virgil-crypto-dev")
+    - OS_NAME=$([ "$TRAVIS_OS_NAME" == "osx" ] && echo "darwin" || echo ${TRAVIS_OS_NAME})
 
 install:
   - wget https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/VERSION
