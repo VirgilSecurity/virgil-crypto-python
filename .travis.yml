@@ -1,6 +1,4 @@
-os:
-  - linux
-  - osx
+os: linux
 
 language: python
 
@@ -15,29 +13,29 @@ python:
 env:
   global:
     - CDN_ARTIFACTS=$([ "$TRAVIS_BRANCH" == "master" ] && echo "virgil-crypto" || echo "virgil-crypto-dev")
-    - OS_NAME=$([ "$TRAVIS_OS_NAME" == "osx" ] && echo "darwin" || echo ${TRAVIS_OS_NAME})
+    - OS_NAME=$(echo $TRAVIS_OS_NAME)
     - PYTHON_VERSION=$(echo $TRAVIS_PYTHON_VERSION | sed -e 's/-dev//g')
 
 matrix:
   include:
     - os: osx
       language: generic
-      env: PYTHON=2.7.15 PYTHON_VERSION=2.7
+      env: PYTHON=2.7.15 PYTHON_VERSION=2.7 OS_NAME="darwin"
     - os: osx
       language: generic
-      env: PYTHON=3.3.7 PYTHON_VERSION=3.3
+      env: PYTHON=3.3.7 PYTHON_VERSION=3.3 OS_NAME="darwin"
     - os: osx
       language: generic
-      env: PYTHON=3.4.9 PYTHON_VERSION=3.4
+      env: PYTHON=3.4.9 PYTHON_VERSION=3.4 OS_NAME="darwin"
     - os: osx
       language: generic
-      env: PYTHON=3.5.6 PYTHON_VERSION=3.5
+      env: PYTHON=3.5.6 PYTHON_VERSION=3.5 OS_NAME="darwin"
     - os: osx
       language: generic
-      env: PYTHON=3.6.7 PYTHON_VERSION=3.6
+      env: PYTHON=3.6.7 PYTHON_VERSION=3.6 OS_NAME="darwin"
     - os: osx
       language: generic
-      env: PYTHON=3.7.1 PYTHON_VERSION=3.7
+      env: PYTHON=3.7.1 PYTHON_VERSION=3.7 OS_NAME="darwin"
 
 before_install: |
   if [ "$TRAVIS_OS_NAME" == "osx" ]; then
