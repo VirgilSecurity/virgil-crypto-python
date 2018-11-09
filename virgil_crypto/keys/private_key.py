@@ -34,5 +34,5 @@
 
 from collections import namedtuple
 
-PrivateKey = namedtuple('PrivateKey', ['receiver_id', 'value'])
+PrivateKey = namedtuple('PrivateKey', ['identifier', 'raw_key'])
 """Class containing private key information"""

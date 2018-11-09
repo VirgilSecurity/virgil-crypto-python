@@ -7,3 +7,5 @@ virgil_crypto/*virgil_crypto_python*
 .idea
 .vscode
 .DS_Store
+/doc-source/api-doc/
+generated-docs/
