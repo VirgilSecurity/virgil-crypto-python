@@ -15,7 +15,7 @@ python:
 install:
   - wget https://cdn.virgilsecurity.com/virgil-crypto-dev/VERSION
   - export OS_NAME=name=$([ "$TRAVIS_OS_NAME" == "osx" ] && echo "darwin" || echo ${TRAVIS_OS_NAME})
-  - wget --no-parent -r https://cdn.virgilsecurity.com/virgil-crypto-dev/python/ -A "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz" -O lib-artifact.tgz
+  - wget -np -nd -r https://cdn.virgilsecurity.com/virgil-crypto-dev/python/ -A "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
   - cd virgil_crypto && tar xzf ../*.tgz --strip=2 --wildcards "*.py" "*.so" -C virgil_crypto/
 
 script:
