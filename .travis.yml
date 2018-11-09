@@ -48,7 +48,7 @@ before_install: |
   fi
 
 install:
-  - if [ -z "$PYTHON_VERSION" ] then; export PYTHON_VERSION=$(echo "$TRAVIS_PYTHON_VERSION" | sed -e 's/-dev//g'); fi
+  - if [ -z "$PYTHON_VERSION" ]; then export PYTHON_VERSION=$(echo "$TRAVIS_PYTHON_VERSION" | sed -e 's/-dev//g'); fi
   - echo $CDN_ARTIFACTS
   - echo $TRAVIS_PYTHON_VERSION
   - echo $PYTHON_VERSION
