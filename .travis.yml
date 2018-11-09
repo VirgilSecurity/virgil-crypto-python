@@ -1,3 +1,7 @@
+os:
+  - linux
+  - osx
+
 language: python
 
 python:
@@ -8,14 +12,14 @@ python:
   - "3.6"
   - "3.7"
 
-virtualenv:
-  system_site_packages: true
-
 install:
-  - pip install virgil-crypto
+  - wget https://cdn.virgilsecurity.com/virgil-crypto-dev/VERSION
+  - export OS_NAME=name=$([ "$TRAVIS_OS_NAME" == "osx" ] && echo "darwin" || echo ${TRAVIS_OS_NAME})
+  - wget --no-parent -r https://cdn.virgilsecurity.com/virgil-crypto-dev/python/ -A "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz" -O lib-artifact.tgz
+  - cd virgil_crypto && tar xzf ../*.tgz --strip=2 --wildcards "*.py" "*.so" -C virgil_crypto/
 
 script:
-  - cd virgil_crypto/tests && python -m unittest discover virgil_crypto.tests -p "*_test.py"
+  - cd virgil_crypto && python -m unittest discover -p "*_test.py"
 
 notifications:
   email:
