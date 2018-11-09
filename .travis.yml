@@ -4,6 +4,10 @@ os:
 
 language: python
 
+env:
+  - CDN_ARTIFACTS=$([ "$TRAVIS_BRANCH" == "master" ] && echo "virgil-crypto" || echo "virgil-crypto-dev")
+  - OS_NAME=$([ "$TRAVIS_OS_NAME" == "osx" ] && echo "darwin" || echo ${TRAVIS_OS_NAME})
+
 python:
   - "2.7"
   - "3.3"
@@ -13,12 +17,12 @@ python:
   - "3.7"
 
 install:
-  - wget https://cdn.virgilsecurity.com/virgil-crypto-dev/VERSION
+  - wget https://cdn.virgilsecurity.com/${CDN_ARTIFACTS}/VERSION
   - sed -i -e 's/-dev//g' VERSION
-  - export OS_NAME=$([ "$TRAVIS_OS_NAME" == "osx" ] && echo "darwin" || echo ${TRAVIS_OS_NAME})
   - echo "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
-  - wget -np -nd -r https://cdn.virgilsecurity.com/virgil-crypto-dev/python/ -A "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
+  - wget -np -nd -r https://cdn.virgilsecurity.com/${CDN_ARTIFACTS}/python/ -A "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
   - cd virgil_crypto && tar xzf ../*.tgz --strip=2 --wildcards "*.py" "*.so"
+  - ls -la
 
 script:
   - pwd
