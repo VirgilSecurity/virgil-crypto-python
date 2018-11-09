@@ -20,7 +20,7 @@ install:
   - wget "https://cdn.virgilsecurity.com/${CDN_ARTIFACTS}/VERSION"
   - sed -i -e 's/-dev//g' VERSION
   - echo "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
-  - wget -np -nd -r https://cdn.virgilsecurity.com/${CDN_ARTIFACTS}/python/ -A "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
+  - wget -np -nd -r "https://cdn.virgilsecurity.com/${CDN_ARTIFACTS}/python/" -A "virgil-crypto-$(cat VERSION)-python-${TRAVIS_PYTHON_VERSION}-${OS_NAME}-x86_64.tgz"
   - cd virgil_crypto && tar xzf ../*.tgz --strip=2 --wildcards "*.py" "*.so"
   - ls -la
 
