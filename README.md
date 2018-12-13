@@ -1,6 +1,6 @@
 # Virgil Security Python Crypto Library 
 
-[![Travis (.com)](https://img.shields.io/travis/com/VirgilSecurity/crypto-python.svg)](https://travis-ci.com/VirgilSecurity/crypto-python) [![PyPI](https://img.shields.io/pypi/v/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/wheel/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/pyversions/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto)
+[![Travis (.com)](https://img.shields.io/travis/com/VirgilSecurity/virgil-crypto-python.svg)](https://travis-ci.com/VirgilSecurity/virgil-crypto-python) [![PyPI](https://img.shields.io/pypi/v/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/wheel/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/pyversions/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto)
 
 ### [Introduction](#introduction) | [Library purposes](#library-purposes) | [Usage examples](#usage-examples) | [Installation](#installation) | [Docs](#docs) | [License](#license) | [Contacts](#support)
 
@@ -108,7 +108,7 @@ pip install virgil-crypto
 ```
 
 ## Docs
-- [API Reference](http://virgilsecurity.github.io/crypto-python/)
+- [API Reference](http://virgilsecurity.github.io/virgil-crypto-python/)
 - [Crypto Core Library](https://github.com/VirgilSecurity/virgil-crypto)
 - [More usage examples](https://developer.virgilsecurity.com/docs/how-to#cryptography)
 
