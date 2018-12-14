@@ -92,7 +92,7 @@ def createLinuxWheels(slave, artifactType, CRYPTO_VERSION){
                 }
 
                 copiedFiles = unpackCryptoArtifactsLinux("python-3.7")
-                docker.image("python:3.6").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
+                docker.image("python:3.7").inside("--user root --env CRYPTO_VERSION=$CRYPTO_VERSION"){
                     sh "pip install wheel"
                     sh "python setup.py bdist_wheel --plat-name manylinux1_x86_64"
                     sh "python setup.py bdist_egg --plat-name manylinux1_x86_64"
