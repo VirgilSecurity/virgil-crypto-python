@@ -57,6 +57,7 @@ class VirgilCrypto(object):
     """
     def __init__(self):
         self.signature_hash_algorithm = HashAlgorithm.SHA512
+        self.use_sha256_fingerprints = False
         self.key_pair_type = KeyPairType.Default
 
     _CUSTOM_PARAM_KEY_SIGNATURE = None
@@ -400,7 +401,8 @@ class VirgilCrypto(object):
         Returns:
             Fingerprint of the source data.
         """
-        hash_data = self.compute_hash(data, HashAlgorithm.SHA256)
+        hash_data = self.__calculate_hash(data)
+
         return Fingerprint(hash_data)
 
     @staticmethod
@@ -431,7 +433,8 @@ class VirgilCrypto(object):
             Hash bytes.
         """
         public_key_der = VirgilKeyPair.publicKeyToDER(public_key)
-        return self.compute_hash(public_key_der, HashAlgorithm.SHA256)
+        hash_data = self.__calculate_hash(public_key_der)
+        return hash_data
 
     @property
     def custom_param_key_signature(self):
@@ -445,3 +448,12 @@ class VirgilCrypto(object):
             return self._CUSTOM_PARAM_KEY_SIGNATURE
         self._CUSTOM_PARAM_KEY_SIGNATURE = self.strtobytes("VIRGIL-DATA-SIGNATURE")
         return self._CUSTOM_PARAM_KEY_SIGNATURE
+
+    def __calculate_hash(self, data):
+        if self.use_sha256_fingerprints:
+            hash_algorithm = HashAlgorithm.SHA256
+            calculated_hash = self.compute_hash(data, hash_algorithm)
+        else:
+            hash_algorithm = HashAlgorithm.SHA512
+            calculated_hash = self.compute_hash(data, hash_algorithm)[0:8]
+        return calculated_hash

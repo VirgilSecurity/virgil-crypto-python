@@ -53,12 +53,14 @@ class CompatibilityTest(unittest.TestCase):
         self.__crypto = None
 
     def test_encrypt_single_recipient(self):
+        self._crypto.use_sha256_fingerprints = True
         data = self._compatibility_data["encrypt_single_recipient"]
         private_key = self._crypto.import_private_key(data["private_key"])
         decrypted_data = self._crypto.decrypt(data["cipher_data"], private_key)
         self.assertEqual(data["original_data"], decrypted_data)
 
     def test_encrypt_multiple_recipients(self):
+        self._crypto.use_sha256_fingerprints = True
         data = self._compatibility_data["encrypt_multiple_recipients"]
         private_keys = [self._crypto.import_private_key(pk) for pk in data["private_keys"]]
         for private_key in private_keys:
@@ -66,6 +68,7 @@ class CompatibilityTest(unittest.TestCase):
             self.assertEqual(data["original_data"], decrypted_data)
 
     def test_sign_then_encrypt_single_recipient(self):
+        self._crypto.use_sha256_fingerprints = True
         data = self._compatibility_data["sign_then_encrypt_single_recipient"]
         private_key = self._crypto.import_private_key(data["private_key"])
         public_key = self._crypto.extract_public_key(private_key)
@@ -77,6 +80,7 @@ class CompatibilityTest(unittest.TestCase):
         self.assertEqual(data["original_data"], decrypted_data)
 
     def test_sign_then_encrypt_multiple_recipients(self):
+        self._crypto.use_sha256_fingerprints = True
         data = self._compatibility_data["sign_then_encrypt_multiple_recipients"]
         private_keys = [self._crypto.import_private_key(pk) for pk in data["private_keys"]]
         public_key = self._crypto.extract_public_key(private_keys[0])
