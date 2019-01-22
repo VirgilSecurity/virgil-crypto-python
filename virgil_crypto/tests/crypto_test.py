@@ -31,11 +31,12 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-
+import hashlib
 import io
 import unittest
+from base64 import b64decode
 
-from virgil_crypto import crypto
+from virgil_crypto import crypto, VirgilKeyPair
 from virgil_crypto import VirgilCrypto
 from virgil_crypto.hashes import HashAlgorithm
 
@@ -212,3 +213,84 @@ class CryptoTest(unittest.TestCase):
         fingerprint = self._crypto().calculate_fingerprint(data)
         self.assertTrue(fingerprint.value)
         self.assertIsInstance(fingerprint, crypto.Fingerprint)
+
+    def test_private_key_identifier_is_correct(self):
+        # STC-33
+        crypto_1 = VirgilCrypto()
+        key_pair_1 = crypto_1.generate_keys()
+
+        self.assertEqual(
+            hashlib.sha512(bytearray(crypto_1.export_public_key(key_pair_1.public_key))).digest()[0:8],
+            bytearray(key_pair_1.private_key.identifier)
+        )
+
+        crypto_2 = VirgilCrypto()
+        crypto_2.use_sha256_fingerprints = True
+        key_pair_2 = crypto_2.generate_keys()
+
+        self.assertEqual(
+            hashlib.sha256(bytearray(crypto_2.export_public_key(key_pair_2.public_key))).digest(),
+            bytearray(key_pair_2.private_key.identifier)
+        )
+
+    def test_public_key_identifier_is_correct(self):
+        # STC-33
+        crypto_1 = VirgilCrypto()
+        key_pair_1 = crypto_1.generate_keys()
+        public_key_1 = crypto_1.extract_public_key(key_pair_1.private_key)
+        self.assertEqual(public_key_1.identifier, key_pair_1.public_key.identifier)
+        self.assertEqual(crypto_1.export_public_key(public_key_1), crypto_1.export_public_key(key_pair_1.public_key))
+        self.assertEqual(
+            hashlib.sha512(bytearray(crypto_1.export_public_key(key_pair_1.public_key))).digest()[0:8],
+            bytearray(key_pair_1.public_key.identifier)
+        )
+
+        crypto_2 = VirgilCrypto()
+        crypto_2.use_sha256_fingerprints = True
+        key_pair_2 = crypto_2.generate_keys()
+        public_key_2 = crypto_2.extract_public_key(key_pair_2.private_key)
+        self.assertEqual(public_key_2.identifier, key_pair_2.public_key.identifier)
+        self.assertEqual(crypto_1.export_public_key(public_key_2), crypto_1.export_public_key(key_pair_2.public_key))
+        self.assertEqual(
+            hashlib.sha256(bytearray(crypto_1.export_public_key(key_pair_2.public_key))).digest(),
+            bytearray(key_pair_2.public_key.identifier)
+        )
+
+    def test_private_key_is_der(self):
+        # STC-31
+        crypto = VirgilCrypto()
+        key_pair_1 = crypto.generate_keys()
+        private_key_data_1 = crypto.export_private_key(key_pair_1.private_key)
+        self.assertEqual(VirgilKeyPair.privateKeyToDER(private_key_data_1), private_key_data_1)
+
+        private_key_2_bytes = "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1DNENBUUF3QlFZREsyVndCQ0lFSUg4bnIyV05nblkya1ZScjRValp4UnJWVGpiMW4wWGdBZkhOWE1ocVkwaVAKLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLQo="
+        private_key_2 = crypto.import_private_key(bytearray(b64decode(private_key_2_bytes)))
+        private_key_2 = key_pair_1.private_key
+        private_key_2_data = crypto.export_private_key(private_key_2)
+        self.assertEqual(VirgilKeyPair.privateKeyToDER(private_key_2_data), private_key_2_data)
+
+        private_key_3_bytes = "LS0tLS1CRUdJTiBFTkNSWVBURUQgUFJJVkFURSBLRVktLS0tLQpNSUdoTUYwR0NTcUdTSWIzRFFFRkRUQlFNQzhHQ1NxR1NJYjNEUUVGRERBaUJCQ3kzSkk3V0VDcGVHZGFIdEc2CktHcjRBZ0lkWXpBS0JnZ3Foa2lHOXcwQ0NqQWRCZ2xnaGtnQlpRTUVBU29FRUp1Wlpqb0oyZGJGdUpZN0ZNSisKN3g0RVFEcnRpZjNNb29rQk5PRTBUaGZmSEtrV0R3K3lvZ0ZRRk1RRFJtU0kwSXl2T2w4RTVnck5QcFNxU3dQNApIL2lzYzJvQVJzSW03alVRQXkrQjl5aTRZK3c9Ci0tLS0tRU5EIEVOQ1JZUFRFRCBQUklWQVRFIEtFWS0tLS0tCg=="
+        private_key_3 = crypto.import_private_key(bytearray(b64decode(private_key_3_bytes)), password="qwerty")
+        private_key_3_data = crypto.export_private_key(private_key_3)
+        self.assertEqual(VirgilKeyPair.privateKeyToDER(private_key_3_data), private_key_3_data)
+
+    def test_public_key_is_der(self):
+        # STC-32
+        crypto = VirgilCrypto()
+        key_pair_1 = crypto.generate_keys()
+        public_key_data_1 = crypto.export_public_key(key_pair_1.public_key)
+        self.assertEqual(VirgilKeyPair.publicKeyToDER(public_key_data_1), public_key_data_1)
+
+        public_key_bytes = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQXYycWRHa0w2RmRxc0xpLzdPQTA1NjJPOVYvVDhFN3F6RmF0RjZMcW9TY3M9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo="
+        public_key_2 = crypto.import_public_key(bytearray(b64decode(public_key_bytes)))
+        public_key_data_2 = crypto.export_public_key(public_key_2)
+        self.assertEqual(VirgilKeyPair.publicKeyToDER(public_key_data_2), public_key_data_2)
+
+    def test_signature_hash(self):
+        # STC-30
+        crypto = VirgilCrypto()
+        key_pair = crypto.generate_keys()
+        test_data = bytearray("test".encode())
+        signature = crypto.sign(test_data, key_pair.private_key)
+
+        self.assertEqual(bytearray(signature[0:17]), b64decode("MFEwDQYJYIZIAWUDBAIDBQA="))
