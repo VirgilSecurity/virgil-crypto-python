@@ -34,15 +34,25 @@
 
 import unittest
 
-from virgil_crypto.virgil_crypto_python import VirgilKeyPair
-from virgil_crypto.virgil_crypto_python import VirgilSigner
+from virgil_crypto_lib.foundation import Verifier, Signer, Sha512
+
+from virgil_crypto import VirgilCrypto
+from virgil_crypto.keys import KeyPairType
+
 
 class VirgilSignerTest(unittest.TestCase):
+
     def test_signs_and_verifies_data(self):
         raw_data = bytearray("test", "utf-8")
-        key_pair = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
-        signer = VirgilSigner()
-        signature = signer.sign(raw_data, key_pair.privateKey())
-        signer = VirgilSigner()
-        is_valid = signer.verify(raw_data, signature, key_pair.publicKey())
+        key_pair = VirgilCrypto().generate_key_pair(KeyPairType.ED25519)
+        signer = Signer()
+        signer.set_hash(Sha512())
+        signer.reset()
+        signer.update(raw_data)
+        signature = signer.sign(key_pair.private_key.private_key)
+
+        verifier = Verifier()
+        verifier.reset(signature)
+        verifier.update(raw_data)
+        is_valid = verifier.verify(key_pair.public_key.public_key)
         self.assertTrue(is_valid)

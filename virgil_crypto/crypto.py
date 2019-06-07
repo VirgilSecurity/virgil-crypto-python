@@ -31,21 +31,15 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+from virgil_crypto_lib.foundation import CtrDrbg, Signer, Sha512, Verifier, Aes256Gcm, RecipientCipher, KeyProvider, \
+    KeyMaterialRng, PublicKey, KeyAsn1Serializer, AlgId
 
-from virgil_crypto import VirgilCipher
-from virgil_crypto import VirgilKeyPair
-from virgil_crypto import VirgilSigner
-from virgil_crypto import VirgilStreamSigner
-from virgil_crypto import VirgilStreamDataSink
-from virgil_crypto import VirgilStreamDataSource
-from virgil_crypto import VirgilHash
-from virgil_crypto.keys import KeyPair
+from virgil_crypto.errors.virgil_crypto_error import VirgilCryptoErrors
+from virgil_crypto.keys import VirgilKeyPair
 from virgil_crypto.keys import KeyPairType
-from virgil_crypto.keys import PrivateKey
-from virgil_crypto.keys import PublicKey
+from virgil_crypto.keys import VirgilPrivateKey
+from virgil_crypto.keys import VirgilPublicKey
 from virgil_crypto.hashes import HashAlgorithm
-from virgil_crypto.hashes import Fingerprint
-from virgil_crypto import VirgilStreamCipher
 
 
 class VirgilCrypto(object):
@@ -55,12 +49,17 @@ class VirgilCrypto(object):
     signature generation and verification, and encryption and decryption
 
     """
-    def __init__(self):
-        self.signature_hash_algorithm = HashAlgorithm.SHA512
-        self.use_sha256_fingerprints = False
-        self.key_pair_type = KeyPairType.Default
 
-    _CUSTOM_PARAM_KEY_SIGNATURE = None
+    CUSTOM_PARAM_KEY_SIGNATURE = bytearray("VIRGIL-DATA-SIGNATURE".encode())
+    CUSTOM_PARAM_KEY_SIGNER_ID = bytearray("VIRGIL-DATA-SIGNER-ID".encode())
+
+    def __init__(self, default_key_pair_type=KeyPairType.ED25519, use_sha256_fingerprints=False):
+        rng = CtrDrbg()
+        rng.setup_defaults()
+        self.rng = rng
+        self.key_pair_type = default_key_pair_type
+        self.use_sha256_fingerprints = use_sha256_fingerprints
+        self.chunk_size = 1024
 
     class SignatureIsNotValid(Exception):
         """Exception raised when Signature is not valid"""
@@ -83,57 +82,80 @@ class VirgilCrypto(object):
         """
         return tuple(bytearray(source, 'utf-8'))
 
-    def generate_keys(self, key_pair_type=KeyPairType.Default):
-        # type: (int) -> KeyPair
+    def generate_key_pair(self, key_type=KeyPairType.ED25519, seed=None):
+        # type: (KeyPairType.KeyType, Union[Tuple[int], bytearray]) -> VirgilKeyPair
         """Generates asymmetric key pair that is comprised of both public and private keys by specified type.
 
         Args:
-            key_pair_type: type of the generated keys.
+            key_type: type of the generated keys.
                 The possible values can be found in KeyPairType enum.
+            seed: random value used to generate key
 
         Returns:
             Generated key pair.
         """
-        native_type = KeyPairType.convert_to_native(key_pair_type)
-        native_key_pair = VirgilKeyPair.generate(native_type)
-        key_pair_id = self.compute_public_key_hash(native_key_pair.publicKey())
-        private_key = PrivateKey(
-            identifier=key_pair_id,
-            raw_key=VirgilKeyPair.privateKeyToDER(native_key_pair.privateKey())
-        )
-        public_key = PublicKey(
-            identifier=key_pair_id,
-            raw_key=VirgilKeyPair.publicKeyToDER(native_key_pair.publicKey())
-        )
-        return KeyPair(private_key=private_key, public_key=public_key)
 
-    def import_private_key(self, key_data, password=None):
-        # type: (Union[Tuple[int], List[int]], Optional[str]) -> PrivateKey
-        """Imports the Private key from material representation.
+        if seed:
+            if KeyMaterialRng.KEY_MATERIAL_LEN_MIN > len(seed) > KeyMaterialRng.KEY_MATERIAL_LEN_MAX:
+                raise VirgilCryptoErrors.INVALID_SEED_SIZE
+            key_material_rng = KeyMaterialRng()
+            key_material_rng.reset_key_material(seed)
+            rng = key_material_rng
+        else:
+            rng = self.rng
+
+        key_provider = KeyProvider()
+
+        key_provider.set_random(rng)
+
+        if key_type.rsa_bitlen:
+            key_provider.set_rsa_params(key_type.rsa_bitlen)
+
+        key_provider.setup_defaults()
+
+        private_key = key_provider.generate_private_key(key_type.alg_id)
+        public_key = private_key.extract_public_key()
+
+        key_id = self.compute_public_key_identifier(public_key)
+
+        return VirgilKeyPair(
+            private_key=VirgilPrivateKey(identifier=key_id, private_key=private_key, key_type=key_type),
+            public_key=VirgilPublicKey(identifier=key_id, public_key=public_key, key_type=key_type)
+        )
+
+    def import_private_key(self, key_data):
+        # type: (Union[Tuple[int], List[int]], bytearray) -> VirgilKeyPair
+        """Imports private key from DER or PEM format
 
         Args:
-            key_data: key material representation bytes.
-            password: private key password, None by default.
+            key_data: Private key in DER or PEM format.
 
         Returns:
-            Imported private key.
+            VirgilKeyPair.
         """
-        decrypted_private_key = None
-        if not password:
-            decrypted_private_key = VirgilKeyPair.privateKeyToDER(key_data)
-        else:
-            decrypted_private_key = VirgilKeyPair.decryptPrivateKey(
-                key_data,
-                self.strtobytes(password)
-            )
+        key_provider = KeyProvider()
+        key_provider.set_random(self.rng)
 
-        public_key_data = VirgilKeyPair.extractPublicKey(decrypted_private_key, [])
-        key_pair_id = self.compute_public_key_hash(public_key_data)
-        private_key_data = VirgilKeyPair.privateKeyToDER(decrypted_private_key)
-        return PrivateKey(identifier=key_pair_id, raw_key=private_key_data)
+        key_provider.setup_defaults()
+
+        private_key = key_provider.import_private_key(bytearray(key_data))
+
+        if private_key.alg_id() == AlgId.RSA:
+            key_type = KeyPairType.KeyType(private_key.alg_id(), private_key.bit_length())
+        else:
+            key_type = KeyPairType.KeyType(private_key.alg_id())
+
+        public_key = private_key.extract_public_key()
+
+        key_id = self.compute_public_key_identifier(public_key)
+
+        return VirgilKeyPair(
+            private_key=VirgilPrivateKey(identifier=key_id, private_key=private_key, key_type=key_type),
+            public_key=VirgilPublicKey(identifier=key_id, public_key=public_key, key_type=key_type)
+        )
 
     def import_public_key(self, key_data):
-        # type: (Union[Tuple[int], List[int]]) -> PublicKey
+        # type: (Union[Tuple[int], List[int]]) -> VirgilPublicKey
         """Imports the Public key from material representation.
 
         Args:
@@ -142,34 +164,45 @@ class VirgilCrypto(object):
         Returns:
             Imported public key.
         """
-        key_pair_id = self.compute_public_key_hash(key_data)
-        public_key_data = VirgilKeyPair.publicKeyToDER(key_data)
-        return PublicKey(identifier=key_pair_id, raw_key=public_key_data)
+        if not key_data:
+            raise ValueError("Key data missing")
 
-    def export_private_key(self, private_key, password=None):
-        # type: (PrivateKey, Optional[str]) -> Tuple[int]
-        """Exports the Private key into material representation.
+        key_provider = KeyProvider()
+        key_provider.set_random(self.rng)
+        key_provider.setup_defaults()
+
+        public_key = key_provider.import_public_key(bytearray(key_data))
+        if public_key.alg_id() == AlgId.RSA:
+            key_type = KeyPairType.KeyType(public_key.alg_id(), public_key.bit_length())
+        else:
+            key_type = KeyPairType.KeyType(public_key.alg_id())
+
+        key_id = self.compute_public_key_identifier(public_key)
+        return VirgilPublicKey(
+            identifier=key_id,
+            public_key=public_key,
+            key_type=key_type
+        )
+
+    @staticmethod
+    def export_private_key(private_key):
+        # type: (VirgilPrivateKey) -> Union[Tuple[int], bytearray]
+        """Exports private key to DER format
 
         Args:
             private_key: private key for export.
-            password: private key password, None by default.
+
 
         Returns:
-            Key material representation bytes.
+            Private key in DER format
         """
-        if not password:
-            return VirgilKeyPair.privateKeyToDER(private_key.raw_key)
-
-        password_bytes = self.strtobytes(password)
-        private_key_data = VirgilKeyPair.encryptPrivateKey(
-            private_key.raw_key,
-            password_bytes
-        )
-        return VirgilKeyPair.privateKeyToDER(private_key_data, password_bytes)
+        serializer = KeyAsn1Serializer()
+        serializer.setup_defaults()
+        return serializer.serialize_private_key(private_key.private_key)
 
     @staticmethod
     def export_public_key(public_key):
-        # type: (PublicKey) -> Tuple[int]
+        # type: (VirgilPrivateKey) -> Union[Tuple[int], bytearray]
         """Exports the Public key into material representation.
 
         Args:
@@ -178,11 +211,14 @@ class VirgilCrypto(object):
         Returns:
             Key material representation bytes.
         """
-        return VirgilKeyPair.publicKeyToDER(public_key.raw_key)
+        serializer = KeyAsn1Serializer()
+        serializer.setup_defaults()
+
+        return serializer.serialize_public_key(public_key.public_key)
 
     @staticmethod
     def extract_public_key(private_key):
-        # type: (PrivateKey) -> PublicKey
+        # type: (VirgilPrivateKey) -> VirgilPublicKey
         """Extracts the Public key from Private key.
 
         Args:
@@ -191,16 +227,14 @@ class VirgilCrypto(object):
         Returns:
             Exported public key.
         """
-        public_key_data = VirgilKeyPair.extractPublicKey(private_key.raw_key, [])
-        public_key = PublicKey(
+        return VirgilPublicKey(
             identifier=private_key.identifier,
-            raw_key=VirgilKeyPair.publicKeyToDER(public_key_data)
+            public_key=private_key.private_key.extract_public_key(),
+            key_type=private_key.key_type
         )
-        return public_key
 
-    @staticmethod
-    def encrypt(data, *recipients):
-        # type: (Union[Tuple[int], List[int]], List[PublicKey]) -> Tuple[int]
+    def encrypt(self, data, *recipients):
+        # type: (Union[Tuple[int], List[int], bytearray], List[VirgilPublicKey]) -> Union[Tuple[int], bytearray]
         """Encrypts the specified data using recipients Public keys.
 
         Args:
@@ -210,14 +244,24 @@ class VirgilCrypto(object):
         Returns:
             Encrypted data bytes.
         """
-        cipher = VirgilCipher()
+        aes_gcm = Aes256Gcm()
+        cipher = RecipientCipher()
+        cipher.set_encryption_cipher(aes_gcm)
+        cipher.set_random(self.rng)
+
         for public_key in recipients:
-            cipher.addKeyRecipient(public_key.identifier, public_key.raw_key)
-        return cipher.encrypt(data)
+            cipher.add_key_recipient(public_key.identifier, public_key.public_key)
+
+        cipher.start_encryption()
+        result = cipher.pack_message_info()
+        result += cipher.process_encryption(bytearray(data))
+        result += cipher.finish_encryption()
+
+        return result
 
     @staticmethod
-    def decrypt(cipher_data, private_key):
-        # type: (Union[Tuple[int], List[int]], PrivateKey) -> Tuple[int]
+    def decrypt(data, private_key):
+        # type: (Union[Tuple[int], List[int]], VirgilPrivateKey) -> Tuple[int]
         """Decrypts the specified data using Private key.
 
         Args:
@@ -227,69 +271,102 @@ class VirgilCrypto(object):
         Returns:
             Decrypted data bytes.
         """
-        cipher = VirgilCipher()
-        decrypted_data = cipher.decryptWithKey(
-            cipher_data,
+        cipher = RecipientCipher()
+
+        cipher.start_decryption_with_key(
             private_key.identifier,
-            private_key.raw_key
+            private_key.private_key,
+            bytearray()
         )
-        return decrypted_data
+        result = bytearray()
+        result += cipher.process_decryption(bytearray(data))
+        result += cipher.finish_decryption()
+        return result
 
     def sign_then_encrypt(self, data, private_key, *recipients):
-        # type: (Union[Tuple[int], List[int]], PrivateKey, List[PublicKey]) -> Tuple[int]
+        # type: (Union[Tuple[int], List[int], bytearray], VirgilPrivateKey, List[VirgilPublicKey]) -> Union[Tuple[int], bytearray]
         """Signs and encrypts the data.
 
         Args:
             data: data bytes for signing and encryption.
-            private_key: private key to sign the data.
+            private_key: sender private key
             recipients: list of recipients' public keys.
                 Used for data encryption.
 
         Returns:
             Signed and encrypted data bytes.
         """
-        signer = VirgilSigner(self.signature_hash_algorithm)
-        signature = signer.sign(data, private_key.raw_key)
-        cipher = VirgilCipher()
-        custom_data = cipher.customParams()
-        custom_data.setData(
-            self.custom_param_key_signature,
-            signature
-        )
-        for public_key in recipients:
-            cipher.addKeyRecipient(public_key.identifier, public_key.raw_key)
-        return cipher.encrypt(data)
+        signature = self.generate_signature(bytearray(data), private_key)
 
-    def decrypt_then_verify(self, data, private_key, public_key):
-        # type: (Union[Tuple[int], List[int]], PrivateKey, PublicKey) -> Tuple[int]
+        aes_gcm = Aes256Gcm()
+        cipher = RecipientCipher()
+
+        cipher.set_encryption_cipher(aes_gcm)
+        cipher.set_random(self.rng)
+
+        for recipient in recipients:
+            cipher.add_key_recipient(recipient.identifier, recipient.public_key)
+
+        cp = cipher.custom_params()
+        cp.add_data(VirgilCrypto.CUSTOM_PARAM_KEY_SIGNATURE, signature)
+        cp.add_data(VirgilCrypto.CUSTOM_PARAM_KEY_SIGNER_ID, private_key.identifier)
+
+        cipher.start_encryption()
+        result = cipher.pack_message_info()
+        result += cipher.process_encryption(bytearray(data))
+        result += cipher.finish_encryption()
+
+        return result
+
+    def decrypt_then_verify(self, data, private_key, signers_public_keys):
+        # type: (Union[Tuple[int], List[int], bytearray], VirgilPrivateKey, Union[List[VirgilPublicKey], VirgilPublicKey]) -> Union[Tuple[int], bytearray]
         """Decrypts and verifies the data.
 
         Args:
             data: encrypted data bytes.
             private_key: private key for decryption.
-            public_key: public key for verification.
-
+            signers_public_keys: List of possible signers public keys.
+                                 WARNING: data should have signature of ANY public key from list.
         Returns:
             Decrypted data bytes.
 
         Raises:
-            SignatureIsNotValid: if signature is not verified.
+            VirgilCryptoError: if signature is not verified.
         """
-        cipher = VirgilCipher()
-        decrypted_data = cipher.decryptWithKey(
-            data,
-            private_key.identifier,
-            private_key.raw_key
-        )
-        signature = cipher.customParams().getData(self.custom_param_key_signature)
-        is_valid = self.verify(decrypted_data, signature, public_key)
-        if not is_valid:
-            raise self.SignatureIsNotValid()
-        return decrypted_data
 
-    def sign(self, data, private_key):
-        # type: (Union[Tuple[int], List[int]], PrivateKey) -> Tuple[int]
-        """Signs the specified data using Private key.
+        cipher = RecipientCipher()
+
+        cipher.start_decryption_with_key(private_key.identifier, private_key.private_key, bytearray())
+        result = bytearray()
+
+        result += cipher.process_decryption(bytearray(data))
+        result += cipher.finish_decryption()
+
+        if isinstance(signers_public_keys, VirgilPublicKey):
+            signer_public_key = signers_public_keys
+        else:
+            try:
+                signer_id = bytearray(cipher.custom_params().find_data(VirgilCrypto.CUSTOM_PARAM_KEY_SIGNER_ID))
+            except Exception:
+                raise VirgilCryptoErrors.SIGNER_NOT_FOUND
+
+            filtered_public_keys = list(filter(lambda x: x.identifier == signer_id, signers_public_keys))
+            if not filtered_public_keys:
+                raise VirgilCryptoErrors.SIGNER_NOT_FOUND
+
+            signer_public_key = filtered_public_keys[0]
+
+        signature = bytearray(cipher.custom_params().find_data(VirgilCrypto.CUSTOM_PARAM_KEY_SIGNATURE))
+
+        is_valid = self.verify_signature(result, signature, signer_public_key)
+        if not is_valid:
+            raise VirgilCryptoErrors.SIGNATURE_NOT_VERIFIED
+        return result
+
+    @staticmethod
+    def generate_signature(data, private_key):
+        # type: (Union[Tuple[int], List[int], bytearray], VirgilPrivateKey) -> Union[Tuple[int], bytearray]
+        """Generates digital signature of data using private key
 
         Args:
             data: raw data bytes for signing.
@@ -298,29 +375,33 @@ class VirgilCrypto(object):
         Returns:
             Signature bytes.
         """
-        signer = VirgilSigner(self.signature_hash_algorithm)
-        signature = signer.sign(data, private_key.raw_key)
+        signer = Signer()
+        signer.set_hash(Sha512())
+        signer.reset()
+        signer.update(bytearray(data))
+        signature = signer.sign(private_key.private_key)
         return signature
 
-    def verify(self, data, signature, signer_public_key):
-        # type: (Union[Tuple[int], List[int]], Union[Tuple[int], List[int]], PublicKey) -> bool
+    @staticmethod
+    def verify_signature(data, signature, public_key):
+        # type: (Union[Tuple[int], List[int], bytearray], Union[Tuple[int], List[int], bytearray], VirgilPublicKey) -> bool
         """Verifies the specified signature using original data and signer's public key.
 
         Args:
             data: original data bytes for verification.
             signature: signature bytes for verification.
-            signer_public_key: signer public key for verification.
+            public_key: signer public key for verification.
 
         Returns:
             True if signature is valid, False otherwise.
         """
-        signer = VirgilSigner(self.signature_hash_algorithm)
-        is_valid = signer.verify(data, signature, signer_public_key.raw_key)
-        return is_valid
+        verifier = Verifier()
+        verifier.reset(bytearray(signature))
+        verifier.update(bytearray(data))
+        return verifier.verify(public_key.public_key)
 
-    @staticmethod
-    def encrypt_stream(input_stream, output_stream, *recipients):
-        # type: (io.IOBase, io.IOBase, List[PublicKey]) -> None
+    def encrypt_stream(self, input_stream, output_stream, *recipients):
+        # type: (io.IOBase, io.IOBase, List[VirgilPublicKey]) -> None
         """Encrypts the specified stream using recipients Public keys.
 
         Args:
@@ -330,16 +411,32 @@ class VirgilCrypto(object):
 
         """
 
-        cipher = VirgilStreamCipher()
-        for public_key in recipients:
-            cipher.addKeyRecipient(public_key.identifier, public_key.raw_key)
-        source = VirgilStreamDataSource(input_stream)
-        sink = VirgilStreamDataSink(output_stream)
-        cipher.encrypt(source, sink)
+        aes_gcm = Aes256Gcm()
+        cipher = RecipientCipher()
 
-    @staticmethod
-    def decrypt_stream(input_stream, output_stream, private_key):
-        # type: (io.IOBase, io.IOBase, PrivateKey) -> None
+        cipher.set_encryption_cipher(aes_gcm)
+        cipher.set_random(self.rng)
+
+        for public_key in recipients:
+            cipher.add_key_recipient(public_key.identifier, public_key.public_key)
+
+        cipher.start_encryption()
+
+        msg_info = cipher.pack_message_info()
+
+        if output_stream.closed:
+            output_stream.open()
+
+        output_stream.write(msg_info)
+
+        self.__for_each_chunk_output(input_stream, output_stream, cipher.process_encryption)
+
+        finish = cipher.finish_encryption()
+
+        output_stream.write(finish)
+
+    def decrypt_stream(self, input_stream, output_stream, private_key):
+        # type: (io.IOBase, io.IOBase, VirgilPrivateKey) -> None
         """Decrypts the specified stream using Private key.
 
         Args:
@@ -348,18 +445,20 @@ class VirgilCrypto(object):
             private_key: private key for decryption.
 
         """
-        cipher = VirgilStreamCipher()
-        source = VirgilStreamDataSource(input_stream)
-        sink = VirgilStreamDataSink(output_stream)
-        cipher.decryptWithKey(
-            source,
-            sink,
+        cipher = RecipientCipher()
+        cipher.start_decryption_with_key(
             private_key.identifier,
-            private_key.raw_key
+            private_key.private_key,
+            bytearray()
         )
 
-    def sign_stream(self, input_stream, private_key):
-        # type: (io.IOBase, PrivateKey) -> Tuple(*int)
+        self.__for_each_chunk_output(input_stream, output_stream, cipher.process_decryption)
+
+        finish = cipher.finish_decryption()
+        output_stream.write(finish)
+
+    def generate_stream_signature(self, input_stream, private_key):
+        # type: (Type[io.IOBase], VirgilPrivateKey) -> Tuple(*int)
         """Signs the specified stream using Private key.
 
         Args:
@@ -369,13 +468,17 @@ class VirgilCrypto(object):
         Returns:
             Signature bytes.
         """
-        signer = VirgilStreamSigner(self.signature_hash_algorithm)
-        source = VirgilStreamDataSource(input_stream)
-        signature = signer.sign(source, private_key.raw_key)
+        signer = Signer()
+        signer.set_hash(Sha512())
+        signer.reset()
+
+        self.__for_each_chunk_input(input_stream, signer.update)
+
+        signature = signer.sign(private_key.private_key)
         return signature
 
-    def verify_stream(self, input_stream, signature, signer_public_key):
-        # type: (io.IOBase, Union[Tuple[int], List[int]], PublicKey) -> bool
+    def verify_stream_signature(self, input_stream, signature, signer_public_key):
+        # type: (io.IOBase, Union[Tuple[int], List[int], bytearray], VirgilPublicKey) -> bool
         """Verifies the specified signature using original stream and signer's Public key.
 
         Args:
@@ -386,28 +489,15 @@ class VirgilCrypto(object):
         Returns:
             True if signature is valid, False otherwise.
         """
-        signer = VirgilStreamSigner(self.signature_hash_algorithm)
-        source = VirgilStreamDataSource(input_stream)
-        is_valid = signer.verify(source, signature, signer_public_key.raw_key)
-        return is_valid
+        verifier = Verifier()
+        verifier.reset(bytearray(signature))
 
-    def calculate_fingerprint(self, data):
-        # type: (Union[Tuple[int], List[int]]) -> Fingerprint
-        """Calculates the fingerprint.
-
-        Args:
-            data: data bytes for fingerprint calculation.
-
-        Returns:
-            Fingerprint of the source data.
-        """
-        hash_data = self.__calculate_hash(data)
-
-        return Fingerprint(hash_data)
+        self.__for_each_chunk_input(input_stream, verifier.update)
+        return verifier.verify(signer_public_key.public_key)
 
     @staticmethod
-    def compute_hash(data, algorithm):
-        # type: (Union[Tuple[int], List[int]], int) -> Tuple[int]
+    def compute_hash(data, algorithm=HashAlgorithm.SHA512):
+        # type: (Union[Tuple[int], List[int], bytearray], int) -> Tuple[int]
         """Computes the hash of specified data.
 
         Args:
@@ -419,41 +509,62 @@ class VirgilCrypto(object):
             Hash bytes.
         """
         native_algorithm = HashAlgorithm.convert_to_native(algorithm)
-        native_hasher = VirgilHash(native_algorithm)
-        return native_hasher.hash(data)
+        native_hasher = native_algorithm()
+        return native_hasher.hash(bytearray(data))
 
-    def compute_public_key_hash(self, public_key):
+    def compute_public_key_identifier(self, public_key):
         # type: (PublicKey) -> Tuple[int]
-        """Computes the hash of specified public key using SHA256 algorithm.
+        """Computes public key identifier.
+
+        Note: Takes first 8 bytes of SHA512 of public key DER if use_sha256_fingerprints=False
+            and SHA256 of public key der if use_sha256_fingerprints=True
 
         Args:
-            public_key: public key for hashing.
+            public_key: public key for compute.
 
         Returns:
-            Hash bytes.
+            Public key identifier.
         """
-        public_key_der = VirgilKeyPair.publicKeyToDER(public_key)
-        hash_data = self.__calculate_hash(public_key_der)
-        return hash_data
+        serializer = KeyAsn1Serializer()
+        serializer.setup_defaults()
 
-    @property
-    def custom_param_key_signature(self):
-        # type: () -> Tuple[int]
-        """Custom param key signature.
+        public_key_data = serializer.serialize_public_key(public_key)
 
-        Returns:
-            `VIRGIL-DATA-SIGNATURE` bytes.
-        """
-        if self._CUSTOM_PARAM_KEY_SIGNATURE:
-            return self._CUSTOM_PARAM_KEY_SIGNATURE
-        self._CUSTOM_PARAM_KEY_SIGNATURE = self.strtobytes("VIRGIL-DATA-SIGNATURE")
-        return self._CUSTOM_PARAM_KEY_SIGNATURE
-
-    def __calculate_hash(self, data):
         if self.use_sha256_fingerprints:
-            hash_algorithm = HashAlgorithm.SHA256
-            calculated_hash = self.compute_hash(data, hash_algorithm)
-        else:
-            hash_algorithm = HashAlgorithm.SHA512
-            calculated_hash = self.compute_hash(data, hash_algorithm)[0:8]
-        return calculated_hash
+            return self.compute_hash(public_key_data, HashAlgorithm.SHA256)
+        return self.compute_hash(public_key_data)[:8]
+
+    def generate_random_data(self, data_size):
+        # type: (int) -> Tuple[int]
+        """Generates cryptographically secure random bytes. Uses CTR DRBG
+
+        Args:
+            data_size: size needed
+
+        Returns:
+            Random data
+        """
+        return self.rng.random(data_size)
+
+    def __for_each_chunk_input(self, input_stream, stream_callback):
+        if input_stream.closed:
+            input_stream.open()
+
+        while True:
+            chunk = input_stream.read(self.chunk_size)
+            if not chunk:
+                break
+            stream_callback(chunk)
+
+    def __for_each_chunk_output(self, input_stream, output_stream, stream_callback):
+        if input_stream.closed:
+            input_stream.open()
+
+        if output_stream.closed:
+            output_stream.open()
+
+        while True:
+            chunk = input_stream.read(self.chunk_size)
+            if not chunk:
+                break
+            output_stream.write(stream_callback(chunk))

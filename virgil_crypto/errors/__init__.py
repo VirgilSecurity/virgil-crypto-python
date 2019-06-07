@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2018 Virgil Security Inc.
+# Copyright (C) 2016-2019 Virgil Security Inc.
 #
 # Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
 #
@@ -32,35 +32,5 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from virgil_crypto.virgil_crypto_python import VirgilDataSink
-from virgil_crypto.virgil_crypto_python import VirgilDataSource
-
-
-class VirgilStreamDataSink(VirgilDataSink):
-    def __init__(self, stream):
-        super(VirgilStreamDataSink, self).__init__()
-        self.stream = stream
-
-    def isGood(self):
-        return self.stream.writable()
-
-    def write(self, data):
-        self.stream.write(bytearray(data))
-
-
-class VirgilStreamDataSource(VirgilDataSource):
-    def __init__(self, stream, buffer_size=1024):
-        super(VirgilStreamDataSource, self).__init__()
-        self.stream = stream
-        self.has_data = True
-        self.buffer = bytearray(buffer_size)
-
-    def hasData(self):
-        return self.stream.readable() and self.has_data
-
-    def read(self):
-        read_count = self.stream.readinto(self.buffer)
-        if not read_count:
-            self.has_data = False
-            return []
-        return self.buffer[0:read_count]
+from .virgil_crypto_error import VirgilCryptoError
+from .virgil_crypto_error import VirgilCryptoErrors

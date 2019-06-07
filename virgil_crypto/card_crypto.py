@@ -34,7 +34,7 @@
 from virgil_crypto.hashes import HashAlgorithm
 
 from virgil_crypto import VirgilCrypto
-from virgil_crypto.keys import PrivateKey, PublicKey
+from virgil_crypto.keys import VirgilPrivateKey, VirgilPublicKey
 
 
 class CardCrypto(object):
@@ -46,75 +46,116 @@ class CardCrypto(object):
         self.__crypto = crypto
 
     def generate_signature(self, data, private_key):
-        # type: (Union[bytes, bytearray], PrivateKey) -> bytearray
+        # type: (Union[bytes, bytearray], VirgilPrivateKey) -> bytearray
         """Signs the specified data using Private key.
+
         Args:
             data: raw data bytes for signing.
             private_key: private key for signing.
+
         Returns:
             Signature bytes.
+
+        Raises:
+            ValueError: if data or private key missing or malformed
         """
+        if not data:
+            raise ValueError("Missing data for signing")
+
         if not private_key:
             raise ValueError("Missing private key")
 
-        if not isinstance(private_key, PrivateKey):
+        if not isinstance(private_key, VirgilPrivateKey):
             raise ValueError("private_key must be a VirgilPrivateKey type")
 
-        return self.__crypto.sign(data, private_key)
+        return self.__crypto.generate_signature(data, private_key)
 
     def verify_signature(self, signature, data, public_key):
-        # type: (Union[bytes, bytearray], Union[bytes, bytearray], PublicKey) -> bool
+        # type: (Union[bytes, bytearray], Union[bytes, bytearray], VirgilPublicKey) -> bool
         """Verifies the specified signature using original data and signer's public key.
+
         Args:
-            data: original data bytes for verification.
             signature: signature bytes for verification.
+            data: original data bytes for verification.
             public_key: signer public key for verification.
+
         Returns:
             True if signature is valid, False otherwise.
+
+        Raises:
+            ValueError: if data, signature, public key missing or malformed.
         """
-        if not isinstance(public_key, PublicKey):
+        if not signature:
+            raise ValueError("Missing signature")
+
+        if not data:
+            raise ValueError("Missing data for signature verify")
+
+        if not isinstance(public_key, VirgilPublicKey):
             raise ValueError("public_key must be a VirgilPublicKey type")
 
-        return self.__crypto.verify(
+        return self.__crypto.verify_signature(
             data, signature, public_key
         )
 
     def export_public_key(self, public_key):
-        # type: (PublicKey) -> bytearray
+        # type: (VirgilPublicKey) -> bytearray
         """Exports the Public key into material representation.
+
         Args:
             public_key: public key for export.
+
         Returns:
             Key material representation bytes.
+
+        Raises:
+            ValueError: if public key missing or malformed.
         """
         if not public_key:
             raise ValueError("Missing public key")
+        if public_key.public_key is None or public_key.identifier is None or public_key.key_type is None:
+            raise ValueError("Public Key is not complete.")
         return self.__crypto.export_public_key(public_key)
 
     def import_public_key(self, data):
-        # type: (Union[bytes, bytearray]) -> PublicKey
+        # type: (Union[bytes, bytearray]) -> VirgilPublicKey
         """Imports the Public key from material representation.
+
         Args:
             data: key material representation bytes.
+
         Returns:
             Imported public key.
+
+        Raises:
+            ValueError: if key data missing
         """
+        if not data:
+            raise ValueError("Key data missing")
         return self.__crypto.import_public_key(data)
 
     def generate_sha512(self, data):
         # type: (Union[bytes, bytearray]) -> bytearray
         """Computes the sha512 hash of specified data.
+
         Args:
             data: data bytes for fingerprint calculation.
+
         Returns:
             Hash bytes.
+
+        Raises:
+              ValueError: if data missed.
         """
+        if not data:
+            raise ValueError("Missed data for fingerprint generation")
         return self.__crypto.compute_hash(data, HashAlgorithm.SHA512)
 
     @property
     def crypto(self):
         """
         Gets Virgil Crypto.
+
         Returns:
              Card Crypto
         """

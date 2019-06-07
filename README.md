@@ -31,24 +31,24 @@ Generate a Private Key with the default algorithm (EC_X25519):
 from virgil_crypto import VirgilCrypto
 
 crypto = VirgilCrypto()
-key_pair = crypto.generate_keys()
+key_pair = crypto.generate_key_pair()
 ```
 
-#### Generate and verify a signature
+#### Generate and verify_signature a signature
 
-Generate signature and sign data with a private key:
+Generate signature and generate_signature data with a private key:
 
 ```python
 from virgil_crypto import VirgilCrypto
 
 crypto = VirgilCrypto()
-key_pair = crypto.generate_keys()
+key_pair = crypto.generate_key_pair()
 sender_private_key = key_pair.private_key
 
 message_to_sign = "Hello, Bob!"
 data_to_sign = message_to_sign.encode()
 
-signature = crypto.sign(data_to_sign, sender_private_key)
+signature = crypto.generate_signature(data_to_sign, sender_private_key)
 ```
 
 Verify a signature with a public key:
@@ -58,7 +58,7 @@ from virgil_crypto import VirgilCrypto
 
 crypto = VirgilCrypto()
 
-verified = crypto.verify(data_to_sign, signature, sender_public_key)
+verified = crypto.verify_signature(data_to_sign, signature, sender_public_key)
 ```
 
 #### Encrypt and decrypt data

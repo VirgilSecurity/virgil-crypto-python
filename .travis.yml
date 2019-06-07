@@ -12,7 +12,6 @@ python:
 
 env:
   global:
-    - CDN_ARTIFACTS=$([ "$TRAVIS_BRANCH" == "master" ] && echo "virgil-crypto" || echo "virgil-crypto-dev")
     - OS_NAME=$(echo $TRAVIS_OS_NAME)
 
 matrix:
@@ -48,17 +47,8 @@ before_install: |
   fi
 
 install:
-  - if [ -z "$PYTHON_VERSION" ]; then export PYTHON_VERSION=$(echo "$TRAVIS_PYTHON_VERSION" | sed -e 's/-dev//g'); fi
-  - echo $CDN_ARTIFACTS
-  - echo $TRAVIS_PYTHON_VERSION
-  - echo $PYTHON_VERSION
-  - wget https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/VERSION
-  - sed -i -e 's/-dev//g' VERSION
-  - echo "virgil-crypto-$(cat VERSION)-python-${PYTHON_VERSION}-${OS_NAME}-*x86_64.tgz"
-  - wget -np -nd -r https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/python/ -A "virgil-crypto-$(cat VERSION)-python-${PYTHON_VERSION}-${OS_NAME}-*x86_64.tgz"
-  - cd virgil_crypto && tar xzf ../*.tgz --strip=2
-  - ls -la
-  - cd ..
+  - pip install virgil-crypto-lib
+  - pip install .
 
 script:
   - pwd

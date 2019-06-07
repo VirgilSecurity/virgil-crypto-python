@@ -42,7 +42,7 @@ from virgil_crypto import VirgilCrypto
 try:
     basestring
 except NameError:
-    basestring=str
+    basestring = str
 
 
 class CompatibilityTest(unittest.TestCase):
@@ -55,34 +55,36 @@ class CompatibilityTest(unittest.TestCase):
     def test_encrypt_single_recipient(self):
         self._crypto.use_sha256_fingerprints = True
         data = self._compatibility_data["encrypt_single_recipient"]
-        private_key = self._crypto.import_private_key(data["private_key"])
+        private_key = self._crypto.import_private_key(data["private_key"]).private_key
         decrypted_data = self._crypto.decrypt(data["cipher_data"], private_key)
-        self.assertEqual(data["original_data"], decrypted_data)
+        self.assertEqual(bytearray(data["original_data"]), bytearray(decrypted_data))
 
     def test_encrypt_multiple_recipients(self):
         self._crypto.use_sha256_fingerprints = True
         data = self._compatibility_data["encrypt_multiple_recipients"]
-        private_keys = [self._crypto.import_private_key(pk) for pk in data["private_keys"]]
+        private_keys = [self._crypto.import_private_key(pk).private_key for pk in data["private_keys"]]
+        self.assertGreater(len(private_keys), 0)
         for private_key in private_keys:
             decrypted_data = self._crypto.decrypt(data["cipher_data"], private_key)
-            self.assertEqual(data["original_data"], decrypted_data)
+            self.assertEqual(bytearray(data["original_data"]), bytearray(decrypted_data))
 
     def test_sign_then_encrypt_single_recipient(self):
         self._crypto.use_sha256_fingerprints = True
         data = self._compatibility_data["sign_then_encrypt_single_recipient"]
-        private_key = self._crypto.import_private_key(data["private_key"])
+        private_key = self._crypto.import_private_key(data["private_key"]).private_key
         public_key = self._crypto.extract_public_key(private_key)
         decrypted_data = self._crypto.decrypt_then_verify(
             data["cipher_data"],
             private_key,
             public_key
         )
-        self.assertEqual(data["original_data"], decrypted_data)
+        self.assertEqual(bytearray(data["original_data"]), bytearray(decrypted_data))
 
     def test_sign_then_encrypt_multiple_recipients(self):
         self._crypto.use_sha256_fingerprints = True
         data = self._compatibility_data["sign_then_encrypt_multiple_recipients"]
-        private_keys = [self._crypto.import_private_key(pk) for pk in data["private_keys"]]
+        private_keys = [self._crypto.import_private_key(pk).private_key for pk in data["private_keys"]]
+        self.assertGreater(len(private_keys), 0)
         public_key = self._crypto.extract_public_key(private_keys[0])
         for private_key in private_keys:
             decrypted_data = self._crypto.decrypt_then_verify(
@@ -90,19 +92,39 @@ class CompatibilityTest(unittest.TestCase):
                 private_key,
                 public_key
             )
-            self.assertEqual(data["original_data"], decrypted_data)
+            self.assertEqual(bytearray(data["original_data"]), bytearray(decrypted_data))
 
     def test_generate_signature(self):
         data = self._compatibility_data["generate_signature"]
-        private_key = self._crypto.import_private_key(data["private_key"])
-        signature = self._crypto.sign(data["original_data"], private_key)
+        private_key = self._crypto.import_private_key(data["private_key"]).private_key
+        signature = self._crypto.generate_signature(data["original_data"], private_key)
         public_key = self._crypto.extract_public_key(private_key)
         self.assertTrue(
-            self._crypto.verify(data["original_data"], data["signature"], public_key)
+            self._crypto.verify_signature(data["original_data"], data["signature"], public_key)
         )
         self.assertTrue(
-            self._crypto.verify(data["original_data"], signature, public_key)
+            self._crypto.verify_signature(data["original_data"], signature, public_key)
         )
+
+    def test_decrypt_then_verify_multiple_signers(self):
+        self._crypto.use_sha256_fingerprints = True
+        data = self._compatibility_data["sign_then_encrypt_multiple_signers"]
+        private_key = self._crypto.import_private_key(data["private_key"]).private_key
+        public_keys = [self._crypto.import_public_key(pk) for pk in data["public_keys"]]
+        decrypted_data = self._crypto.decrypt_then_verify(
+            data["cipher_data"],
+            private_key,
+            public_keys
+        )
+        self.assertEqual(bytearray(data["original_data"]), bytearray(decrypted_data))
+
+    def generate_ed25519_using_seed(self):
+        data = self._compatibility_data["generate_ed25519_using_seed"]
+        seed = base64.b64decode(data["seed"])
+        key_pair = self._crypto.generate_key_pair(seed=seed)
+        self.assertEqual(base64.b64decode(data["private_key"]), self._crypto.export_private_key(key_pair.private_key))
+        self.assertEqual(base64.b64decode(data["pubblic_key"]), self._crypto.export_public_key(key_pair.public_key))
+
 
     @property
     def _crypto(self):

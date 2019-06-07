@@ -32,7 +32,7 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from .key_pair import KeyPair
+from .virgil_key_pair import VirgilKeyPair
 from .key_pair_type import KeyPairType
-from .private_key import PrivateKey
-from .public_key import PublicKey
+from .virgil_private_key import VirgilPrivateKey
+from .virgil_public_key import VirgilPublicKey

@@ -32,48 +32,7 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import virgil_crypto
+from collections import namedtuple
 
-
-class Fingerprint(object):
-    """Fingerprint container class.
-
-    Class provides methods for importing and exporting fingerprints.
-    """
-    def __init__(self, fingerprint_data):
-        self._fingerprint_data = fingerprint_data
-
-    @classmethod
-    def from_hex(cls, fingerprint_hex):
-        # type: (str) -> Fingerprint
-        """Creates new Fingerprint from hex.
-
-        Args:
-            fingerprint_hex: hex string of the fingerprint.
-
-        Returns:
-            Imported Fingerprint.
-        """
-        data = virgil_crypto.VirgilByteArrayUtils.hexToBytes(fingerprint_hex)
-        return cls(data)
-
-    @property
-    def value(self):
-        # type: () -> Tuple[*int]
-        """Raw fingerprint value.
-
-        Returns:
-            Fingerprint bytes.
-        """
-        return self._fingerprint_data
-
-    @property
-    def to_hex(self):
-        # type: () -> str
-        """Fingerprint data in hexadecimal.
-
-        Returns:
-            Hexademical fingerprint representation.
-        """
-        hex_data = virgil_crypto.VirgilByteArrayUtils.bytesToHex(self.value)
-        return hex_data
+VirgilKeyPair = namedtuple('VirgilKeyPair', ['private_key', 'public_key'])
+"""Class containing key pair information"""
