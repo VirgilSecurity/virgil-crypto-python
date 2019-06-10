@@ -31,42 +31,41 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-from virgil_crypto_lib.foundation import AlgId
+import unittest
+from base64 import b64decode
+
+from virgil_crypto import VirgilCrypto
+from virgil_crypto.hashes import HashAlgorithm
 
 
-class KeyPairType(object):
-    """Enumeration containing supported KeyPairTypes"""
+class CryptoFormatsTest(unittest.TestCase):
 
-    class KeyType(object):
+    def test_signature_hash(self):
+        data = bytearray("test".encode())
+        crypto = VirgilCrypto()
+        key_pair = crypto.generate_key_pair()
+        signature = crypto.generate_signature(data, key_pair.private_key)
 
-        def __init__(self, alg_id, rsa_bitlen=None):
-            self._alg_id = alg_id
-            self._rsa_bitlen = rsa_bitlen
+        self.assertEqual(
+            signature[:17],
+            bytearray(b64decode("MFEwDQYJYIZIAWUDBAIDBQA="))
+        )
 
-        def __eq__(self, other):
-            return self.alg_id == other.alg_id and self.rsa_bitlen == other.rsa_bitlen
+    def test_key_identifier_is_correct(self):
+        crypto_1 = VirgilCrypto()
+        key_pair_1 = crypto_1.generate_key_pair()
 
-        @property
-        def alg_id(self):
-            return self._alg_id
+        self.assertEqual(key_pair_1.private_key.identifier, key_pair_1.public_key.identifier)
+        self.assertEqual(
+            crypto_1.compute_hash(crypto_1.export_public_key(key_pair_1.public_key), HashAlgorithm.SHA512)[:8],
+            key_pair_1.private_key.identifier
+        )
 
-        @property
-        def rsa_bitlen(self):
-            return self._rsa_bitlen
+        crypto_2 = VirgilCrypto(use_sha256_fingerprints=True)
+        key_pair_2 = crypto_2.generate_key_pair()
 
-    class UnknownTypeException(Exception):
-        """Exception raised when Unknown Type passed to convertion method"""
+        self.assertEqual(
+            crypto_2.compute_hash(crypto_1.export_public_key(key_pair_2.public_key), HashAlgorithm.SHA256),
+            key_pair_2.private_key.identifier
+        )
 
-        def __init__(self, key_pair_type):
-            super(KeyPairType.UnknownTypeException, self).__init__(key_pair_type)
-            self.key_pair_type = key_pair_type
-
-        def __str__(self):
-            return "KeyPairType not found: %i" % self.key_pair_type
-
-    CURVE25519 = KeyType(AlgId.CURVE25519)
-    ED25519 = KeyType(AlgId.ED25519)
-    SECP256R1 = KeyType(AlgId.SECP256R1)
-    RSA_2048 = KeyType(AlgId.RSA, 2048)
-    RSA_4096 = KeyType(AlgId.RSA, 4096)
-    RSA_8192 = KeyType(AlgId.RSA, 8192)

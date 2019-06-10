@@ -141,7 +141,7 @@ class VirgilCrypto(object):
         private_key = key_provider.import_private_key(bytearray(key_data))
 
         if private_key.alg_id() == AlgId.RSA:
-            key_type = KeyPairType.KeyType(private_key.alg_id(), private_key.bit_length())
+            key_type = KeyPairType.KeyType(private_key.alg_id(), private_key.key_bitlen())
         else:
             key_type = KeyPairType.KeyType(private_key.alg_id())
 
@@ -173,7 +173,7 @@ class VirgilCrypto(object):
 
         public_key = key_provider.import_public_key(bytearray(key_data))
         if public_key.alg_id() == AlgId.RSA:
-            key_type = KeyPairType.KeyType(public_key.alg_id(), public_key.bit_length())
+            key_type = KeyPairType.KeyType(public_key.alg_id(), public_key.key_bitlen())
         else:
             key_type = KeyPairType.KeyType(public_key.alg_id())
 
