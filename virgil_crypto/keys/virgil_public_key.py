@@ -43,5 +43,4 @@ class VirgilPublicKey(object):
 
     def __eq__(self, other):
         return self.identifier == other.identifier and \
-               self.public_key.export_public_key() == other.public_key.export_public_key() and \
                self.key_type == other.key_type

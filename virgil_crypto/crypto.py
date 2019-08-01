@@ -141,7 +141,7 @@ class VirgilCrypto(object):
         private_key = key_provider.import_private_key(bytearray(key_data))
 
         if private_key.alg_id() == AlgId.RSA:
-            key_type = KeyPairType.KeyType(private_key.alg_id(), private_key.key_bitlen())
+            key_type = KeyPairType.KeyType(private_key.alg_id(), private_key.bitlen())
         else:
             key_type = KeyPairType.KeyType(private_key.alg_id())
 
@@ -173,7 +173,7 @@ class VirgilCrypto(object):
 
         public_key = key_provider.import_public_key(bytearray(key_data))
         if public_key.alg_id() == AlgId.RSA:
-            key_type = KeyPairType.KeyType(public_key.alg_id(), public_key.key_bitlen())
+            key_type = KeyPairType.KeyType(public_key.alg_id(), public_key.bitlen())
         else:
             key_type = KeyPairType.KeyType(public_key.alg_id())
 
@@ -196,9 +196,12 @@ class VirgilCrypto(object):
         Returns:
             Private key in DER format
         """
-        serializer = KeyAsn1Serializer()
-        serializer.setup_defaults()
-        return serializer.serialize_private_key(private_key.private_key)
+        key_provider = KeyProvider()
+        rand = CtrDrbg()
+        key_provider.set_random(rand)
+        key_provider.setup_defaults()
+
+        return key_provider.export_private_key(private_key.private_key)
 
     @staticmethod
     def export_public_key(public_key):
@@ -211,10 +214,12 @@ class VirgilCrypto(object):
         Returns:
             Key material representation bytes.
         """
-        serializer = KeyAsn1Serializer()
-        serializer.setup_defaults()
+        key_provider = KeyProvider()
+        rand = CtrDrbg()
+        key_provider.set_random(rand)
+        key_provider.setup_defaults()
 
-        return serializer.serialize_public_key(public_key.public_key)
+        return key_provider.export_public_key(public_key.public_key)
 
     @staticmethod
     def extract_public_key(private_key):
@@ -376,9 +381,12 @@ class VirgilCrypto(object):
             Signature bytes.
         """
         signer = Signer()
+        rand = CtrDrbg()
+        rand.setup_defaults()
         signer.set_hash(Sha512())
+        signer.set_random(rand)
         signer.reset()
-        signer.update(bytearray(data))
+        signer.append_data(bytearray(data))
         signature = signer.sign(private_key.private_key)
         return signature
 
@@ -397,7 +405,7 @@ class VirgilCrypto(object):
         """
         verifier = Verifier()
         verifier.reset(bytearray(signature))
-        verifier.update(bytearray(data))
+        verifier.append_data(bytearray(data))
         return verifier.verify(public_key.public_key)
 
     def encrypt_stream(self, input_stream, output_stream, *recipients):
@@ -469,10 +477,13 @@ class VirgilCrypto(object):
             Signature bytes.
         """
         signer = Signer()
+        rand = CtrDrbg()
+        rand.setup_defaults()
+        signer.set_random(rand)
         signer.set_hash(Sha512())
         signer.reset()
 
-        self.__for_each_chunk_input(input_stream, signer.update)
+        self.__for_each_chunk_input(input_stream, signer.append_data)
 
         signature = signer.sign(private_key.private_key)
         return signature
@@ -492,7 +503,7 @@ class VirgilCrypto(object):
         verifier = Verifier()
         verifier.reset(bytearray(signature))
 
-        self.__for_each_chunk_input(input_stream, verifier.update)
+        self.__for_each_chunk_input(input_stream, verifier.append_data)
         return verifier.verify(signer_public_key.public_key)
 
     @staticmethod
@@ -525,10 +536,10 @@ class VirgilCrypto(object):
         Returns:
             Public key identifier.
         """
-        serializer = KeyAsn1Serializer()
-        serializer.setup_defaults()
+        key_provider = KeyProvider()
+        key_provider.setup_defaults()
 
-        public_key_data = serializer.serialize_public_key(public_key)
+        public_key_data = key_provider.export_public_key(public_key)
 
         if self.use_sha256_fingerprints:
             return self.compute_hash(public_key_data, HashAlgorithm.SHA256)

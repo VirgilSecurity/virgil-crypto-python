@@ -391,7 +391,7 @@ class CryptoTest(unittest.TestCase):
 
         self.assertEqual(
             hashlib.sha512(bytearray(crypto_1.export_public_key(key_pair_1.public_key))).digest()[0:8],
-            bytearray(key_pair_1.private_key.identifier)
+            bytes(key_pair_1.private_key.identifier)
         )
 
         crypto_2 = VirgilCrypto()

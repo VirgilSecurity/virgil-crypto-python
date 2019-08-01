@@ -48,11 +48,11 @@ class VirgilSignerTest(unittest.TestCase):
         signer = Signer()
         signer.set_hash(Sha512())
         signer.reset()
-        signer.update(raw_data)
+        signer.append_data(raw_data)
         signature = signer.sign(key_pair.private_key.private_key)
 
         verifier = Verifier()
         verifier.reset(signature)
-        verifier.update(raw_data)
+        verifier.append_data(raw_data)
         is_valid = verifier.verify(key_pair.public_key.public_key)
         self.assertTrue(is_valid)
