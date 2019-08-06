@@ -32,9 +32,6 @@ matrix:
       env: PYTHON=3.7.1 PYTHON_VERSION=3.7 OS_NAME=darwin
     - os: windows
       language: shell
-      env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
-    - os: windows
-      language: shell
       env: PATH=/c/Python34:/c/Python34/Scripts:$PATH
     - os: windows
       language: shell
@@ -58,12 +55,12 @@ before_install: |
     export PATH="/Users/travis/.pyenv/shims:${PATH}"
     pyenv-virtualenv venv
     source venv/bin/activate
-    python --version
   fi
+  python --version
 
 install:
-  - pip install virgil-crypto-lib
-  - pip install .
+  - pip install virgil-crypto-lib || pip3 install virgil-crypto-lib
+  - pip install . || pip3 install .
 
 script:
   - pwd
