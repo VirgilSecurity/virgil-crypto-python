@@ -4,7 +4,6 @@ language: python
 
 python:
   - "2.7"
-  - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
@@ -31,6 +30,22 @@ matrix:
     - os: osx
       language: generic
       env: PYTHON=3.7.1 PYTHON_VERSION=3.7 OS_NAME=darwin
+    - os: windows
+      language: shell
+      env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
+    - os: windows
+      language: shell
+      env: PATH=/c/Python34:/c/Python34/Scripts:$PATH
+    - os: windows
+      language: shell
+      env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
+    - os: windows
+      language: shell
+      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
+    - os: windows
+      language: shell
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+
 
 before_install: |
   if [ "$TRAVIS_OS_NAME" == "osx" ]; then

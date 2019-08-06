@@ -88,7 +88,7 @@ stage('Deploy Packages'){
 // Utility Functions
 
 def cleanPythonPackageBuildDirectoriesLinux(){
-    sh "find virgil_crypto_lib/ -name '*.pyc' -delete"
+    sh "find virgil_crypto/ -name '*.pyc' -delete"
     sh "rm -rf ./build"
     sh "rm -rf *.egg-info"
 }
