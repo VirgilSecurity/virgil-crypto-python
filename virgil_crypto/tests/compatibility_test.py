@@ -73,7 +73,7 @@ class CompatibilityTest(unittest.TestCase):
         data = self._compatibility_data["sign_then_encrypt_single_recipient"]
         private_key = self._crypto.import_private_key(data["private_key"]).private_key
         public_key = self._crypto.extract_public_key(private_key)
-        decrypted_data = self._crypto.decrypt_then_verify(
+        decrypted_data = self._crypto.decrypt_and_verify(
             data["cipher_data"],
             private_key,
             public_key
@@ -87,7 +87,7 @@ class CompatibilityTest(unittest.TestCase):
         self.assertGreater(len(private_keys), 0)
         public_key = self._crypto.extract_public_key(private_keys[0])
         for private_key in private_keys:
-            decrypted_data = self._crypto.decrypt_then_verify(
+            decrypted_data = self._crypto.decrypt_and_verify(
                 data["cipher_data"],
                 private_key,
                 public_key
@@ -111,7 +111,7 @@ class CompatibilityTest(unittest.TestCase):
         data = self._compatibility_data["sign_then_encrypt_multiple_signers"]
         private_key = self._crypto.import_private_key(data["private_key"]).private_key
         public_keys = [self._crypto.import_public_key(pk) for pk in data["public_keys"]]
-        decrypted_data = self._crypto.decrypt_then_verify(
+        decrypted_data = self._crypto.decrypt_and_verify(
             data["cipher_data"],
             private_key,
             public_keys

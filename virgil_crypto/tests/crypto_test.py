@@ -105,13 +105,13 @@ class CryptoTest(unittest.TestCase):
 
         data = bytearray("test data".encode())
 
-        encrypted = self._crypto().sign_then_encrypt(data, key_pair_1.private_key, key_pair_1.public_key, key_pair_2.public_key)
-        decrypted = self._crypto().decrypt_then_verify(encrypted, key_pair_2.private_key, [key_pair_1.public_key, key_pair_2.public_key])
+        encrypted = self._crypto().sign_and_encrypt(data, key_pair_1.private_key, key_pair_1.public_key, key_pair_2.public_key)
+        decrypted = self._crypto().decrypt_and_verify(encrypted, key_pair_2.private_key, [key_pair_1.public_key, key_pair_2.public_key])
 
         self.assertEqual(data, decrypted)
 
-        self.assertRaises(VirgilCryptoFoundationError, self._crypto().decrypt_then_verify, encrypted, key_pair_3.private_key, [key_pair_1.public_key, key_pair_2.public_key])
-        self.assertRaises(VirgilCryptoError, self._crypto().decrypt_then_verify, encrypted, key_pair_2.private_key, key_pair_3.public_key)
+        self.assertRaises(VirgilCryptoFoundationError, self._crypto().decrypt_and_verify, encrypted, key_pair_3.private_key, [key_pair_1.public_key, key_pair_2.public_key])
+        self.assertRaises(VirgilCryptoError, self._crypto().decrypt_and_verify, encrypted, key_pair_2.private_key, key_pair_3.public_key)
 
     def __check_stream_sign(self, key_pair_type):
         key_pair_1 = self._crypto().generate_key_pair(key_pair_type)
@@ -442,13 +442,13 @@ class CryptoTest(unittest.TestCase):
         key_pair_3 = crypto.generate_key_pair()
         data = [1, 2, 3]
 
-        cipher_data = crypto.sign_then_encrypt(data, key_pair_1.private_key, key_pair_2.public_key)
+        cipher_data = crypto.sign_and_encrypt(data, key_pair_1.private_key, key_pair_2.public_key)
 
-        decrypted_data = crypto.decrypt_then_verify(cipher_data, key_pair_2.private_key, [key_pair_1.public_key, key_pair_2.public_key])
+        decrypted_data = crypto.decrypt_and_verify(cipher_data, key_pair_2.private_key, [key_pair_1.public_key, key_pair_2.public_key])
 
         self.assertEqual(data, list(decrypted_data))
 
-        self.assertRaises(VirgilCryptoError, crypto.decrypt_then_verify, cipher_data, key_pair_2.private_key, key_pair_3.public_key)
+        self.assertRaises(VirgilCryptoError, crypto.decrypt_and_verify, cipher_data, key_pair_2.private_key, key_pair_3.public_key)
 
     def test_generate_key_using_seed(self):
         crypto = VirgilCrypto()

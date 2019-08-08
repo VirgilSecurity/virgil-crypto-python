@@ -288,7 +288,7 @@ class VirgilCrypto(object):
         result += cipher.finish_decryption()
         return result
 
-    def sign_then_encrypt(self, data, private_key, *recipients):
+    def sign_and_encrypt(self, data, private_key, *recipients):
         # type: (Union[Tuple[int], List[int], bytearray], VirgilPrivateKey, List[VirgilPublicKey]) -> Union[Tuple[int], bytearray]
         """Signs and encrypts the data.
 
@@ -323,7 +323,7 @@ class VirgilCrypto(object):
 
         return result
 
-    def decrypt_then_verify(self, data, private_key, signers_public_keys):
+    def decrypt_and_verify(self, data, private_key, signers_public_keys):
         # type: (Union[Tuple[int], List[int], bytearray], VirgilPrivateKey, Union[List[VirgilPublicKey], VirgilPublicKey]) -> Union[Tuple[int], bytearray]
         """Decrypts and verifies the data.
 
