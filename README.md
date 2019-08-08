@@ -5,16 +5,9 @@
 ### [Introduction](#introduction) | [Library purposes](#library-purposes) | [Usage examples](#usage-examples) | [Installation](#installation) | [Docs](#docs) | [License](#license) | [Contacts](#support)
 
 ## Introduction
-VirgilCrypto is a stack of security libraries (ECIES with Crypto Agility wrapped in Virgil Cryptogram) and an 
-open-source high-level [cryptographic library](https://github.com/VirgilSecurity/virgil-crypto) that allows you to 
-perform all necessary operations for securely storing and transferring data in your digital solutions. Crypto Library 
-is written in C++ and is suitable for mobile and server platforms.
+VirgilCrypto is a stack of security libraries (ECIES with Crypto Agility wrapped in Virgil Cryptogram) and an open-source high-level [cryptographic library](https://github.com/VirgilSecurity/virgil-crypto) that allows you to perform all necessary operations for securely storing and transferring data in your digital solutions. Crypto Library is written in C++ and is suitable for mobile and server platforms.
 
-Virgil Security, Inc., guides software developers into the forthcoming security world in which everything will be 
-encrypted (and passwords will be eliminated). In this world, the days of developers having to raise millions of 
-dollars to build a secure chat, secure email, secure file-sharing, or a secure anything have come to an end. Now 
-developers can instead focus on building features that give them a competitive market advantage while end-users can 
-enjoy the privacy and security they increasingly demand.
+Virgil Security, Inc., guides software developers into the forthcoming security world in which everything will be encrypted (and passwords will be eliminated). In this world, the days of developers having to raise millions of dollars to build a secure chat, secure email, secure file-sharing, or a secure anything have come to an end. Now developers can instead focus on building features that give them a competitive market advantage while end-users can enjoy the privacy and security they increasingly demand.
 
 ## Library purposes
 * Asymmetric Key Generation
@@ -120,4 +113,4 @@ Our developer support team is here to help you. Find out more information on our
 
 You can find us on [Twitter](https://twitter.com/VirgilSecurity) or send us email support@VirgilSecurity.com.
 
-Also, get extra help from our support team on [Slack](https://virgilsecurity.slack.com/join/shared_invite/enQtMjg4MDE4ODM3ODA4LTc2OWQwOTQ3YjNhNTQ0ZjJiZDc2NjkzYjYxNTI0YzhmNTY2ZDliMGJjYWQ5YmZiOGU5ZWEzNmJiMWZhYWVmYTM).
+Also, get extra help from our support team on [Slack](https://virgilsecurity.com/join-community).
