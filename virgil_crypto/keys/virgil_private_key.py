@@ -32,7 +32,15 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from collections import namedtuple
 
-PublicKey = namedtuple('PublicKey', ['identifier', 'raw_key'])
-"""Class containing public key information"""
+class VirgilPrivateKey(object):
+    """Class containing private key information"""
+
+    def __init__(self, identifier=None, private_key=None, key_type=None):
+        self.identifier = identifier
+        self.private_key = private_key
+        self.key_type = key_type
+
+    def __eq__(self, other):
+        return self.identifier == other.identifier and \
+               self.key_type == other.key_type

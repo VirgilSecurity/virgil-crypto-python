@@ -33,6 +33,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 import unittest
 
+from virgil_crypto_lib.foundation._c_bridge import VirgilCryptoFoundationError
+
 from virgil_crypto.access_token_signer import AccessTokenSigner
 
 
@@ -42,7 +44,7 @@ class AccessTokenSignerTest(unittest.TestCase):
         super(AccessTokenSignerTest, self).__init__(*args, **kwargs)
         self.token = bytearray("test_token".encode())
         self.signer = AccessTokenSigner()
-        key_pair = self.signer.crypto.generate_keys()
+        key_pair = self.signer.crypto.generate_key_pair()
         self.private_key = key_pair.private_key
         self.public_key = key_pair.public_key
 
@@ -61,8 +63,8 @@ class AccessTokenSignerTest(unittest.TestCase):
 
     def test_verify_token_signature_wrong_signature(self):
         signature = self.signer.generate_token_signature(self.token, self.private_key)
-        self.assertRaises(RuntimeError, self.signer.verify_token_signature, signature[:-2], self.token, self.public_key)
-        wrong_key_pair = self.signer.crypto.generate_keys()
+        self.assertRaises(VirgilCryptoFoundationError, self.signer.verify_token_signature, signature[:-2], self.token, self.public_key)
+        wrong_key_pair = self.signer.crypto.generate_key_pair()
         self.assertFalse(self.signer.verify_token_signature(signature, self.token, wrong_key_pair.public_key))
 
     def test_verify_token_signature_empty_token(self):

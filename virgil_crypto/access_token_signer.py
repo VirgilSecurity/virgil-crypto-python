@@ -31,7 +31,7 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-from virgil_crypto.keys import PrivateKey, PublicKey
+from virgil_crypto.keys import VirgilPrivateKey, VirgilPublicKey
 
 from virgil_crypto import VirgilCrypto
 
@@ -46,36 +46,52 @@ class AccessTokenSigner(object):
         self.__crypto = crypto
 
     def generate_token_signature(self, token, private_key):
-        # type: (Union[bytes, bytearray], PrivateKey) -> bytearray
+        # type: (Union[bytes, bytearray], VirgilPrivateKey) -> bytearray
         """Generate signature for Access token
+
         Args:
-            token: Access Token.
+            token: Access Token bytes.
             private_key: Signer Private Key.
+
         Returns:
             Signature bytes.
+
+        Raises:
+            ValueError: if token or private key missing or malformed
         """
         if not private_key:
             raise ValueError("Missing private key")
 
-        if not isinstance(private_key, PrivateKey):
+        if not token:
+            raise ValueError("Missing token for sign")
+
+        if not isinstance(private_key, VirgilPrivateKey):
             raise ValueError("private_key must be a VirgilPrivateKey type")
 
-        return self.__crypto.sign(token, private_key)
+        return self.__crypto.generate_signature(token, private_key)
 
     def verify_token_signature(self, signature,  token, public_key):
-        # type: (Union[bytes, bytearray], Union[bytes, bytearray], PublicKey) -> bool
+        # type: (Union[bytes, bytearray], Union[bytes, bytearray], VirgilPublicKey) -> bool
         """Verify Access Token signature
+
         Args:
-            signature: Token signature
+            signature: Token signature bytes
             token: Access Token
             public_key: Signer Public Key
+
         Returns:
             True if signature is valid, False otherwise.
+
+        Raises:
+            ValueError: if public key or token missed or malformed.
         """
-        if not isinstance(public_key, PublicKey):
+        if not isinstance(public_key, VirgilPublicKey):
             raise ValueError("public_key must be a VirgilPublicKey type")
 
-        return self.__crypto.verify(
+        if not token:
+            raise ValueError("Missing token to verify")
+
+        return self.__crypto.verify_signature(
             token, signature, public_key
         )
 

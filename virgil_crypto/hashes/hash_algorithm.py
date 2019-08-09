@@ -31,8 +31,7 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-
-import virgil_crypto
+from virgil_crypto_lib.foundation import Sha224, Sha256, Sha384, Sha512
 
 
 class HashAlgorithm(object):
@@ -47,25 +46,21 @@ class HashAlgorithm(object):
 
         def __str__(self):
             return "KeyPairType not found: %i" % self.algorithm
-    MD5 = 0
-    SHA1 = 1
-    SHA224 = 2
-    SHA256 = 3
-    SHA384 = 4
-    SHA512 = 5
+    SHA224 = 0
+    SHA256 = 1
+    SHA384 = 2
+    SHA512 = 3
 
     _ALGORITHMS_TO_NATIVE = {
-        MD5: virgil_crypto.VirgilHash.Algorithm_MD5,
-        SHA1: virgil_crypto.VirgilHash.Algorithm_SHA1,
-        SHA224: virgil_crypto.VirgilHash.Algorithm_SHA224,
-        SHA256: virgil_crypto.VirgilHash.Algorithm_SHA256,
-        SHA384: virgil_crypto.VirgilHash.Algorithm_SHA384,
-        SHA512: virgil_crypto.VirgilHash.Algorithm_SHA512,
+        SHA224: Sha224,
+        SHA256: Sha256,
+        SHA384: Sha384,
+        SHA512: Sha512,
     }
 
     @classmethod
     def convert_to_native(cls, algorithm):
-        # type: (int) -> int
+        # type: (int) -> Type[Union[Sha224, Sha256, Sha384, Sha512]]
         """Converts algorithm enum value to native value
 
         Args:

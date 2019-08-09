@@ -4,7 +4,6 @@ language: python
 
 python:
   - "2.7"
-  - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
@@ -12,7 +11,6 @@ python:
 
 env:
   global:
-    - CDN_ARTIFACTS=$([ "$TRAVIS_BRANCH" == "master" ] && echo "virgil-crypto" || echo "virgil-crypto-dev")
     - OS_NAME=$(echo $TRAVIS_OS_NAME)
 
 matrix:
@@ -32,6 +30,31 @@ matrix:
     - os: osx
       language: generic
       env: PYTHON=3.7.1 PYTHON_VERSION=3.7 OS_NAME=darwin
+    - os: windows
+      language: shell
+      before_install:
+        - choco install python2
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
+    - os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.5.4
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
+    - os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.6.7
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
+    - os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.7.2
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+
 
 before_install: |
   if [ "$TRAVIS_OS_NAME" == "osx" ]; then
@@ -44,21 +67,12 @@ before_install: |
     export PATH="/Users/travis/.pyenv/shims:${PATH}"
     pyenv-virtualenv venv
     source venv/bin/activate
-    python --version
   fi
+  python --version
 
 install:
-  - if [ -z "$PYTHON_VERSION" ]; then export PYTHON_VERSION=$(echo "$TRAVIS_PYTHON_VERSION" | sed -e 's/-dev//g'); fi
-  - echo $CDN_ARTIFACTS
-  - echo $TRAVIS_PYTHON_VERSION
-  - echo $PYTHON_VERSION
-  - wget https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/VERSION
-  - sed -i -e 's/-dev//g' VERSION
-  - echo "virgil-crypto-$(cat VERSION)-python-${PYTHON_VERSION}-${OS_NAME}-*x86_64.tgz"
-  - wget -np -nd -r https://cdn.virgilsecurity.com/$CDN_ARTIFACTS/python/ -A "virgil-crypto-$(cat VERSION)-python-${PYTHON_VERSION}-${OS_NAME}-*x86_64.tgz"
-  - cd virgil_crypto && tar xzf ../*.tgz --strip=2
-  - ls -la
-  - cd ..
+  - pip install virgil-crypto-lib || pip3 install virgil-crypto-lib
+  - pip install . || pip3 install .
 
 script:
   - pwd

@@ -34,34 +34,59 @@
 
 import unittest
 
-from virgil_crypto.virgil_crypto_python import VirgilCipher
-from virgil_crypto.virgil_crypto_python import VirgilKeyPair
+from virgil_crypto_lib.foundation import RecipientCipher, Aes256Gcm, CtrDrbg
+
+from virgil_crypto import VirgilCrypto
+from virgil_crypto.keys import KeyPairType
 
 
 class VirgilCipherTest(unittest.TestCase):
     def test_encrypts_and_decrypts_data(self):
         raw_data = bytearray("test", "utf-8")
-        key_pair1 = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
-        key_pair2 = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
-        cipher = VirgilCipher()
-        cipher.addKeyRecipient(bytearray("1", "utf-8"), key_pair1.publicKey())
-        cipher.addKeyRecipient(bytearray("2", "utf-8"), key_pair2.publicKey())
-        encrypted_data = cipher.encrypt(raw_data)
-        cipher = VirgilCipher()
-        decrypted_data1 = cipher.decryptWithKey(
-            encrypted_data,
+
+        rng = CtrDrbg()
+        rng.setup_defaults()
+
+        key_pair1 = VirgilCrypto().generate_key_pair(KeyPairType.ED25519)
+        key_pair2 = VirgilCrypto().generate_key_pair(KeyPairType.ED25519)
+
+        cipher = RecipientCipher()
+        aes_gcm = Aes256Gcm()
+
+        cipher.set_encryption_cipher(aes_gcm)
+        cipher.set_random(rng)
+
+        cipher.add_key_recipient(bytearray("1", "utf-8"), key_pair1.public_key.public_key)
+        cipher.add_key_recipient(bytearray("2", "utf-8"), key_pair2.public_key.public_key)
+
+        cipher.start_encryption()
+        encrypted_data = cipher.pack_message_info()
+        encrypted_data += cipher.process_encryption(raw_data)
+        encrypted_data += cipher.finish_encryption()
+
+        cipher.start_decryption_with_key(
             bytearray("1", "utf-8"),
-            key_pair1.privateKey()
+            key_pair1.private_key.private_key,
+            bytearray()
         )
+        decrypted_data1 = bytearray()
+        decrypted_data1 += cipher.process_decryption(encrypted_data)
+        decrypted_data1 += cipher.finish_decryption()
+
         self.assertEqual(
             raw_data,
             bytearray(decrypted_data1)
         )
-        decrypted_data2 = cipher.decryptWithKey(
-            encrypted_data,
+
+        cipher.start_decryption_with_key(
             bytearray("2", "utf-8"),
-            key_pair2.privateKey()
+            key_pair2.private_key.private_key,
+            bytearray()
         )
+        decrypted_data2 = bytearray()
+        decrypted_data2 += cipher.process_decryption(encrypted_data)
+        decrypted_data2 += cipher.finish_decryption()
+
         self.assertEqual(
             raw_data,
             bytearray(decrypted_data2)

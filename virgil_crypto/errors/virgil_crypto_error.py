@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2018 Virgil Security Inc.
+# Copyright (C) 2016-2019 Virgil Security Inc.
 #
 # Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
 #
@@ -32,48 +32,23 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import virgil_crypto
+
+class VirgilCryptoError(Exception):
+
+    def __init__(self, message):
+        super(Exception, self).__init__(message)
 
 
-class Fingerprint(object):
-    """Fingerprint container class.
+class VirgilCryptoErrors(object):
 
-    Class provides methods for importing and exporting fingerprints.
-    """
-    def __init__(self, fingerprint_data):
-        self._fingerprint_data = fingerprint_data
-
-    @classmethod
-    def from_hex(cls, fingerprint_hex):
-        # type: (str) -> Fingerprint
-        """Creates new Fingerprint from hex.
-
-        Args:
-            fingerprint_hex: hex string of the fingerprint.
-
-        Returns:
-            Imported Fingerprint.
-        """
-        data = virgil_crypto.VirgilByteArrayUtils.hexToBytes(fingerprint_hex)
-        return cls(data)
-
-    @property
-    def value(self):
-        # type: () -> Tuple[*int]
-        """Raw fingerprint value.
-
-        Returns:
-            Fingerprint bytes.
-        """
-        return self._fingerprint_data
-
-    @property
-    def to_hex(self):
-        # type: () -> str
-        """Fingerprint data in hexadecimal.
-
-        Returns:
-            Hexademical fingerprint representation.
-        """
-        hex_data = virgil_crypto.VirgilByteArrayUtils.bytesToHex(self.value)
-        return hex_data
+    SIGNER_NOT_FOUND = VirgilCryptoError("Signer not found")
+    SIGNATURE_NOT_FOUND = VirgilCryptoError("Signature not found")
+    SIGNATURE_NOT_VERIFIED = VirgilCryptoError("Signature not verified")
+    UNKNOWN_ALG_ID = VirgilCryptoError("Unknown alg id")
+    RSA_SHOULD_BE_CONSTRUCTED_DIRECTLY = VirgilCryptoError("Rsa should be constructed directly")
+    UNSUPPORTED_RSA_LENGTH = VirgilCryptoError("Unsupported rsa length")
+    KEY_DOESNT_SUPPORT_SIGNING = VirgilCryptoError("Key doesn't support signing")
+    PASSED_KEY_IS_NOT_VIRGIL = VirgilCryptoError("Passed key is not virgil")
+    OUTPUT_STREAM_ERROR = VirgilCryptoError("Output stream has no space left")
+    INPUT_STREAM_ERROR = VirgilCryptoError("Output stream has no space left")
+    INVALID_SEED_SIZE = VirgilCryptoError("Invalid seed size")

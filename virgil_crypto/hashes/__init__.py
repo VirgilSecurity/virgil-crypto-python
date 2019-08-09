@@ -33,4 +33,3 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 from .hash_algorithm import HashAlgorithm
-from .fingerprint import Fingerprint

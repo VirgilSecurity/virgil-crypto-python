@@ -35,21 +35,27 @@
 import io
 import unittest
 
-from virgil_crypto.virgil_crypto_python import VirgilKeyPair
-from virgil_crypto.virgil_crypto_python import VirgilStreamSigner
-from virgil_crypto.streams import VirgilStreamDataSource
+from virgil_crypto_lib.foundation import Signer, Sha512, Verifier
+
+from virgil_crypto import VirgilCrypto
+from virgil_crypto.keys import KeyPairType
 
 
 class VirgilStreamSignerTest(unittest.TestCase):
+
     def test_signs_and_verifies_data(self):
         raw_data = bytearray("test", "utf-8")
-        key_pair = VirgilKeyPair.generate(VirgilKeyPair.Type_FAST_EC_ED25519)
+        key_pair = VirgilCrypto().generate_key_pair(KeyPairType.ED25519)
         input_stream = io.BytesIO(raw_data)
-        source = VirgilStreamDataSource(input_stream)
-        signer = VirgilStreamSigner()
-        signature = signer.sign(source, key_pair.privateKey())
+        signer = Signer()
+        signer.set_hash(Sha512())
+        signer.reset()
+        VirgilCrypto()._VirgilCrypto__for_each_chunk_input(input_stream, signer.append_data)
+        signature = signer.sign(key_pair.private_key.private_key)
+
         input_stream = io.BytesIO(raw_data)
-        source = VirgilStreamDataSource(input_stream)
-        signer = VirgilStreamSigner()
-        is_valid = signer.verify(source, signature, key_pair.publicKey())
+        verifier = Verifier()
+        verifier.reset(signature)
+        VirgilCrypto()._VirgilCrypto__for_each_chunk_input(input_stream, verifier.append_data)
+        is_valid = verifier.verify(key_pair.public_key.public_key)
         self.assertTrue(is_valid)

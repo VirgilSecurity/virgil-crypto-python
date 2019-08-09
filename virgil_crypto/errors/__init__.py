@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2018 Virgil Security Inc.
+# Copyright (C) 2016-2019 Virgil Security Inc.
 #
 # Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
 #
@@ -32,7 +32,5 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from collections import namedtuple
-
-KeyPair = namedtuple('KeyPair', ['private_key', 'public_key'])
-"""Class containing key pair information"""
+from .virgil_crypto_error import VirgilCryptoError
+from .virgil_crypto_error import VirgilCryptoErrors

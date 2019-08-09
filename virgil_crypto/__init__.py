@@ -32,7 +32,6 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from .virgil_crypto_python import *
-from .streams import *
+__version__ = "5.0.0"
+
 from .crypto import VirgilCrypto
-from .private_key_exporter import PrivateKeyExporter

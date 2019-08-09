@@ -32,45 +32,40 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 import unittest
+from base64 import b64decode
 
 from virgil_crypto import VirgilCrypto
-from virgil_crypto.private_key_exporter import PrivateKeyExporter
+from virgil_crypto.hashes import HashAlgorithm
 
 
-class PrivateKeyExporterTest(unittest.TestCase):
+class CryptoFormatsTest(unittest.TestCase):
 
-    def test_export_private_key_with_password(self):
+    def test_signature_hash(self):
+        data = bytearray("test".encode())
         crypto = VirgilCrypto()
-        key_pair = crypto.generate_keys()
-        passwd = "test"
-        pke = PrivateKeyExporter(passwd)
-        exported_key_data = pke.export_private_key(key_pair.private_key)
-        self.assertIsNotNone(exported_key_data)
-        self.assertEqual(crypto.import_private_key(exported_key_data, passwd), key_pair.private_key)
+        key_pair = crypto.generate_key_pair()
+        signature = crypto.generate_signature(data, key_pair.private_key)
 
-    def test_import_private_key_with_password(self):
-        crypto = VirgilCrypto()
-        key_pair = crypto.generate_keys()
-        passwd = "test"
-        pke = PrivateKeyExporter(passwd)
-        exported_key_data = pke.export_private_key(key_pair.private_key)
-        imported_key = pke.import_private_key(exported_key_data)
-        self.assertIsNotNone(imported_key)
-        self.assertEqual(imported_key, key_pair.private_key)
+        self.assertEqual(
+            signature[:17],
+            bytearray(b64decode("MFEwDQYJYIZIAWUDBAIDBQA="))
+        )
 
-    def test_export_private_key(self):
-        crypto = VirgilCrypto()
-        key_pair = crypto.generate_keys()
-        pke = PrivateKeyExporter()
-        exported_key_data = pke.export_private_key(key_pair.private_key)
-        self.assertIsNotNone(exported_key_data)
-        self.assertEqual(crypto.export_private_key(key_pair.private_key), exported_key_data)
+    def test_key_identifier_is_correct(self):
+        crypto_1 = VirgilCrypto()
+        key_pair_1 = crypto_1.generate_key_pair()
 
-    def test_import_private_key(self):
-        crypto = VirgilCrypto()
-        key_pair = crypto.generate_keys()
-        pke = PrivateKeyExporter()
-        exported_key_data = pke.export_private_key(key_pair.private_key)
-        imported_key = pke.import_private_key(exported_key_data)
-        self.assertIsNotNone(imported_key)
-        self.assertEqual(imported_key, key_pair.private_key)
+        self.assertEqual(key_pair_1.private_key.identifier, key_pair_1.public_key.identifier)
+        self.assertEqual(
+            crypto_1.compute_hash(crypto_1.export_public_key(key_pair_1.public_key), HashAlgorithm.SHA512)[:8],
+            key_pair_1.private_key.identifier
+        )
+
+        crypto_2 = VirgilCrypto(use_sha256_fingerprints=True)
+        key_pair_2 = crypto_2.generate_key_pair()
+
+        self.assertEqual(
+            crypto_2.compute_hash(crypto_1.export_public_key(key_pair_2.public_key), HashAlgorithm.SHA256),
+            key_pair_2.private_key.identifier
+        )
+

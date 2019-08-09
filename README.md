@@ -1,20 +1,13 @@
 # Virgil Security Python Crypto Library 
 
-[![Travis (.com)](https://img.shields.io/travis/com/VirgilSecurity/virgil-crypto-python.svg)](https://travis-ci.com/VirgilSecurity/virgil-crypto-python) [![PyPI](https://img.shields.io/pypi/v/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/wheel/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/pyversions/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto)
+[![Travis (.com)](https://img.shields.io/travis/com/VirgilSecurity/virgil-crypto-python/master.svg)](https://travis-ci.com/VirgilSecurity/virgil-crypto-python) [![PyPI](https://img.shields.io/pypi/v/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/wheel/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/pyversions/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto)
 
 ### [Introduction](#introduction) | [Library purposes](#library-purposes) | [Usage examples](#usage-examples) | [Installation](#installation) | [Docs](#docs) | [License](#license) | [Contacts](#support)
 
 ## Introduction
-VirgilCrypto is a stack of security libraries (ECIES with Crypto Agility wrapped in Virgil Cryptogram) and an 
-open-source high-level [cryptographic library](https://github.com/VirgilSecurity/virgil-crypto) that allows you to 
-perform all necessary operations for securely storing and transferring data in your digital solutions. Crypto Library 
-is written in C++ and is suitable for mobile and server platforms.
+VirgilCrypto is a stack of security libraries (ECIES with Crypto Agility wrapped in Virgil Cryptogram) and an open-source high-level [cryptographic library](https://github.com/VirgilSecurity/virgil-crypto) that allows you to perform all necessary operations for securely storing and transferring data in your digital solutions. Crypto Library is written in C++ and is suitable for mobile and server platforms.
 
-Virgil Security, Inc., guides software developers into the forthcoming security world in which everything will be 
-encrypted (and passwords will be eliminated). In this world, the days of developers having to raise millions of 
-dollars to build a secure chat, secure email, secure file-sharing, or a secure anything have come to an end. Now 
-developers can instead focus on building features that give them a competitive market advantage while end-users can 
-enjoy the privacy and security they increasingly demand.
+Virgil Security, Inc., guides software developers into the forthcoming security world in which everything will be encrypted (and passwords will be eliminated). In this world, the days of developers having to raise millions of dollars to build a secure chat, secure email, secure file-sharing, or a secure anything have come to an end. Now developers can instead focus on building features that give them a competitive market advantage while end-users can enjoy the privacy and security they increasingly demand.
 
 ## Library purposes
 * Asymmetric Key Generation
@@ -31,24 +24,24 @@ Generate a Private Key with the default algorithm (EC_X25519):
 from virgil_crypto import VirgilCrypto
 
 crypto = VirgilCrypto()
-key_pair = crypto.generate_keys()
+key_pair = crypto.generate_key_pair()
 ```
 
-#### Generate and verify a signature
+#### Generate and verify_signature a signature
 
-Generate signature and sign data with a private key:
+Generate signature and generate_signature data with a private key:
 
 ```python
 from virgil_crypto import VirgilCrypto
 
 crypto = VirgilCrypto()
-key_pair = crypto.generate_keys()
+key_pair = crypto.generate_key_pair()
 sender_private_key = key_pair.private_key
 
 message_to_sign = "Hello, Bob!"
 data_to_sign = message_to_sign.encode()
 
-signature = crypto.sign(data_to_sign, sender_private_key)
+signature = crypto.generate_signature(data_to_sign, sender_private_key)
 ```
 
 Verify a signature with a public key:
@@ -58,7 +51,7 @@ from virgil_crypto import VirgilCrypto
 
 crypto = VirgilCrypto()
 
-verified = crypto.verify(data_to_sign, signature, sender_public_key)
+verified = crypto.verify_signature(data_to_sign, signature, sender_public_key)
 ```
 
 #### Encrypt and decrypt data
@@ -120,4 +113,4 @@ Our developer support team is here to help you. Find out more information on our
 
 You can find us on [Twitter](https://twitter.com/VirgilSecurity) or send us email support@VirgilSecurity.com.
 
-Also, get extra help from our support team on [Slack](https://virgilsecurity.slack.com/join/shared_invite/enQtMjg4MDE4ODM3ODA4LTc2OWQwOTQ3YjNhNTQ0ZjJiZDc2NjkzYjYxNTI0YzhmNTY2ZDliMGJjYWQ5YmZiOGU5ZWEzNmJiMWZhYWVmYTM).
+Also, get extra help from our support team on [Slack](https://virgilsecurity.com/join-community).
