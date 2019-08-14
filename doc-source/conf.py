@@ -20,13 +20,13 @@ sys.path.insert(0, os.path.abspath('.'))
 # -- Project information -----------------------------------------------------
 
 project = 'Virgil Crypto'
-copyright = '2018, Virgil Security'
+copyright = '2016-2019, Virgil Security'
 author = 'Virgil Security'
 
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = 'v3'
+release = 'v5'
 
 
 # -- General configuration ---------------------------------------------------
