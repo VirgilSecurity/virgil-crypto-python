@@ -1,0 +1,17 @@
+virgil\_crypto.hashes package
+=============================
+
+Submodules
+----------
+
+.. toctree::
+
+   virgil_crypto.hashes.hash_algorithm
+
+Module contents
+---------------
+
+.. automodule:: virgil_crypto.hashes
+   :members:
+   :undoc-members:
+   :show-inheritance:

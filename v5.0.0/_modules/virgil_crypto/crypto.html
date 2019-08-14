@@ -1,0 +1,770 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>virgil_crypto.crypto &mdash; Virgil Crypto v3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Virgil Crypto
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-doc/modules.html">virgil_crypto</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Virgil Crypto</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>virgil_crypto.crypto</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for virgil_crypto.crypto</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2016-2018 Virgil Security Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># Lead Maintainer: Virgil Security Inc. &lt;support@virgilsecurity.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Redistribution and use in source and binary forms, with or without</span>
+<span class="c1"># modification, are permitted provided that the following conditions are</span>
+<span class="c1"># met:</span>
+<span class="c1">#</span>
+<span class="c1">#     (1) Redistributions of source code must retain the above copyright</span>
+<span class="c1">#     notice, this list of conditions and the following disclaimer.</span>
+<span class="c1">#</span>
+<span class="c1">#     (2) Redistributions in binary form must reproduce the above copyright</span>
+<span class="c1">#     notice, this list of conditions and the following disclaimer in</span>
+<span class="c1">#     the documentation and/or other materials provided with the</span>
+<span class="c1">#     distribution.</span>
+<span class="c1">#</span>
+<span class="c1">#     (3) Neither the name of the copyright holder nor the names of its</span>
+<span class="c1">#     contributors may be used to endorse or promote products derived from</span>
+<span class="c1">#     this software without specific prior written permission.</span>
+<span class="c1">#</span>
+<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE AUTHOR &#39;&#39;AS IS&#39;&#39; AND ANY EXPRESS OR</span>
+<span class="c1"># IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED</span>
+<span class="c1"># WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE</span>
+<span class="c1"># DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,</span>
+<span class="c1"># INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES</span>
+<span class="c1"># (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR</span>
+<span class="c1"># SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)</span>
+<span class="c1"># HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,</span>
+<span class="c1"># STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING</span>
+<span class="c1"># IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</span>
+<span class="c1"># POSSIBILITY OF SUCH DAMAGE.</span>
+<span class="kn">from</span> <span class="nn">virgil_crypto_lib.foundation</span> <span class="k">import</span> <span class="n">CtrDrbg</span><span class="p">,</span> <span class="n">Signer</span><span class="p">,</span> <span class="n">Sha512</span><span class="p">,</span> <span class="n">Verifier</span><span class="p">,</span> <span class="n">Aes256Gcm</span><span class="p">,</span> <span class="n">RecipientCipher</span><span class="p">,</span> <span class="n">KeyProvider</span><span class="p">,</span> \
+    <span class="n">KeyMaterialRng</span><span class="p">,</span> <span class="n">PublicKey</span><span class="p">,</span> <span class="n">KeyAsn1Serializer</span><span class="p">,</span> <span class="n">AlgId</span>
+
+<span class="kn">from</span> <span class="nn">virgil_crypto.errors.virgil_crypto_error</span> <span class="k">import</span> <span class="n">VirgilCryptoErrors</span>
+<span class="kn">from</span> <span class="nn">virgil_crypto.keys</span> <span class="k">import</span> <span class="n">VirgilKeyPair</span>
+<span class="kn">from</span> <span class="nn">virgil_crypto.keys</span> <span class="k">import</span> <span class="n">KeyPairType</span>
+<span class="kn">from</span> <span class="nn">virgil_crypto.keys</span> <span class="k">import</span> <span class="n">VirgilPrivateKey</span>
+<span class="kn">from</span> <span class="nn">virgil_crypto.keys</span> <span class="k">import</span> <span class="n">VirgilPublicKey</span>
+<span class="kn">from</span> <span class="nn">virgil_crypto.hashes</span> <span class="k">import</span> <span class="n">HashAlgorithm</span>
+
+
+<div class="viewcode-block" id="VirgilCrypto"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto">[docs]</a><span class="k">class</span> <span class="nc">VirgilCrypto</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper for cryptographic operations.</span>
+
+<span class="sd">    Class provides a cryptographic operations in applications, such as hashing,</span>
+<span class="sd">    signature generation and verification, and encryption and decryption</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">CUSTOM_PARAM_KEY_SIGNATURE</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="s2">&quot;VIRGIL-DATA-SIGNATURE&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">CUSTOM_PARAM_KEY_SIGNER_ID</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="s2">&quot;VIRGIL-DATA-SIGNER-ID&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_key_pair_type</span><span class="o">=</span><span class="n">KeyPairType</span><span class="o">.</span><span class="n">ED25519</span><span class="p">,</span> <span class="n">use_sha256_fingerprints</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">CtrDrbg</span><span class="p">()</span>
+        <span class="n">rng</span><span class="o">.</span><span class="n">setup_defaults</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">rng</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key_pair_type</span> <span class="o">=</span> <span class="n">default_key_pair_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_sha256_fingerprints</span> <span class="o">=</span> <span class="n">use_sha256_fingerprints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">1024</span>
+
+<div class="viewcode-block" id="VirgilCrypto.SignatureIsNotValid"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.SignatureIsNotValid">[docs]</a>    <span class="k">class</span> <span class="nc">SignatureIsNotValid</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Exception raised when Signature is not valid&quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">VirgilCrypto</span><span class="o">.</span><span class="n">SignatureIsNotValid</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;Signature is not valid&quot;</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.strtobytes"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.strtobytes">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">strtobytes</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+        <span class="c1"># type: (str) -&gt; Tuple[int]</span>
+        <span class="sd">&quot;&quot;&quot;Convert string to bytes tuple used for all crypto methods.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source: String for conversion.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple containing bytes from converted source string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.generate_key_pair"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.generate_key_pair">[docs]</a>    <span class="k">def</span> <span class="nf">generate_key_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">KeyPairType</span><span class="o">.</span><span class="n">ED25519</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># type: (KeyPairType.KeyType, Union[Tuple[int], bytearray]) -&gt; VirgilKeyPair</span>
+        <span class="sd">&quot;&quot;&quot;Generates asymmetric key pair that is comprised of both public and private keys by specified type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key_type: type of the generated keys.</span>
+<span class="sd">                The possible values can be found in KeyPairType enum.</span>
+<span class="sd">            seed: random value used to generate key</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Generated key pair.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">seed</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">KeyMaterialRng</span><span class="o">.</span><span class="n">KEY_MATERIAL_LEN_MIN</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">KeyMaterialRng</span><span class="o">.</span><span class="n">KEY_MATERIAL_LEN_MAX</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">VirgilCryptoErrors</span><span class="o">.</span><span class="n">INVALID_SEED_SIZE</span>
+            <span class="n">key_material_rng</span> <span class="o">=</span> <span class="n">KeyMaterialRng</span><span class="p">()</span>
+            <span class="n">key_material_rng</span><span class="o">.</span><span class="n">reset_key_material</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">key_material_rng</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span>
+
+        <span class="n">key_provider</span> <span class="o">=</span> <span class="n">KeyProvider</span><span class="p">()</span>
+
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">key_type</span><span class="o">.</span><span class="n">rsa_bitlen</span><span class="p">:</span>
+            <span class="n">key_provider</span><span class="o">.</span><span class="n">set_rsa_params</span><span class="p">(</span><span class="n">key_type</span><span class="o">.</span><span class="n">rsa_bitlen</span><span class="p">)</span>
+
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">setup_defaults</span><span class="p">()</span>
+
+        <span class="n">private_key</span> <span class="o">=</span> <span class="n">key_provider</span><span class="o">.</span><span class="n">generate_private_key</span><span class="p">(</span><span class="n">key_type</span><span class="o">.</span><span class="n">alg_id</span><span class="p">)</span>
+        <span class="n">public_key</span> <span class="o">=</span> <span class="n">private_key</span><span class="o">.</span><span class="n">extract_public_key</span><span class="p">()</span>
+
+        <span class="n">key_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_public_key_identifier</span><span class="p">(</span><span class="n">public_key</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">VirgilKeyPair</span><span class="p">(</span>
+            <span class="n">private_key</span><span class="o">=</span><span class="n">VirgilPrivateKey</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="n">key_id</span><span class="p">,</span> <span class="n">private_key</span><span class="o">=</span><span class="n">private_key</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">),</span>
+            <span class="n">public_key</span><span class="o">=</span><span class="n">VirgilPublicKey</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="n">key_id</span><span class="p">,</span> <span class="n">public_key</span><span class="o">=</span><span class="n">public_key</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.import_private_key"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.import_private_key">[docs]</a>    <span class="k">def</span> <span class="nf">import_private_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_data</span><span class="p">):</span>
+        <span class="c1"># type: (Union[Tuple[int], List[int]], bytearray) -&gt; VirgilKeyPair</span>
+        <span class="sd">&quot;&quot;&quot;Imports private key from DER or PEM format</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key_data: Private key in DER or PEM format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            VirgilKeyPair.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key_provider</span> <span class="o">=</span> <span class="n">KeyProvider</span><span class="p">()</span>
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">setup_defaults</span><span class="p">()</span>
+
+        <span class="n">private_key</span> <span class="o">=</span> <span class="n">key_provider</span><span class="o">.</span><span class="n">import_private_key</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">key_data</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">private_key</span><span class="o">.</span><span class="n">alg_id</span><span class="p">()</span> <span class="o">==</span> <span class="n">AlgId</span><span class="o">.</span><span class="n">RSA</span><span class="p">:</span>
+            <span class="n">key_type</span> <span class="o">=</span> <span class="n">KeyPairType</span><span class="o">.</span><span class="n">KeyType</span><span class="p">(</span><span class="n">private_key</span><span class="o">.</span><span class="n">alg_id</span><span class="p">(),</span> <span class="n">private_key</span><span class="o">.</span><span class="n">bitlen</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">key_type</span> <span class="o">=</span> <span class="n">KeyPairType</span><span class="o">.</span><span class="n">KeyType</span><span class="p">(</span><span class="n">private_key</span><span class="o">.</span><span class="n">alg_id</span><span class="p">())</span>
+
+        <span class="n">public_key</span> <span class="o">=</span> <span class="n">private_key</span><span class="o">.</span><span class="n">extract_public_key</span><span class="p">()</span>
+
+        <span class="n">key_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_public_key_identifier</span><span class="p">(</span><span class="n">public_key</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">VirgilKeyPair</span><span class="p">(</span>
+            <span class="n">private_key</span><span class="o">=</span><span class="n">VirgilPrivateKey</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="n">key_id</span><span class="p">,</span> <span class="n">private_key</span><span class="o">=</span><span class="n">private_key</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">),</span>
+            <span class="n">public_key</span><span class="o">=</span><span class="n">VirgilPublicKey</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="n">key_id</span><span class="p">,</span> <span class="n">public_key</span><span class="o">=</span><span class="n">public_key</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.import_public_key"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.import_public_key">[docs]</a>    <span class="k">def</span> <span class="nf">import_public_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_data</span><span class="p">):</span>
+        <span class="c1"># type: (Union[Tuple[int], List[int]]) -&gt; VirgilPublicKey</span>
+        <span class="sd">&quot;&quot;&quot;Imports the Public key from material representation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key_data: key material representation bytes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Imported public key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">key_data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Key data missing&quot;</span><span class="p">)</span>
+
+        <span class="n">key_provider</span> <span class="o">=</span> <span class="n">KeyProvider</span><span class="p">()</span>
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">setup_defaults</span><span class="p">()</span>
+
+        <span class="n">public_key</span> <span class="o">=</span> <span class="n">key_provider</span><span class="o">.</span><span class="n">import_public_key</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">key_data</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">public_key</span><span class="o">.</span><span class="n">alg_id</span><span class="p">()</span> <span class="o">==</span> <span class="n">AlgId</span><span class="o">.</span><span class="n">RSA</span><span class="p">:</span>
+            <span class="n">key_type</span> <span class="o">=</span> <span class="n">KeyPairType</span><span class="o">.</span><span class="n">KeyType</span><span class="p">(</span><span class="n">public_key</span><span class="o">.</span><span class="n">alg_id</span><span class="p">(),</span> <span class="n">public_key</span><span class="o">.</span><span class="n">bitlen</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">key_type</span> <span class="o">=</span> <span class="n">KeyPairType</span><span class="o">.</span><span class="n">KeyType</span><span class="p">(</span><span class="n">public_key</span><span class="o">.</span><span class="n">alg_id</span><span class="p">())</span>
+
+        <span class="n">key_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_public_key_identifier</span><span class="p">(</span><span class="n">public_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">VirgilPublicKey</span><span class="p">(</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="n">key_id</span><span class="p">,</span>
+            <span class="n">public_key</span><span class="o">=</span><span class="n">public_key</span><span class="p">,</span>
+            <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.export_private_key"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.export_private_key">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">export_private_key</span><span class="p">(</span><span class="n">private_key</span><span class="p">):</span>
+        <span class="c1"># type: (VirgilPrivateKey) -&gt; Union[Tuple[int], bytearray]</span>
+        <span class="sd">&quot;&quot;&quot;Exports private key to DER format</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            private_key: private key for export.</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Private key in DER format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key_provider</span> <span class="o">=</span> <span class="n">KeyProvider</span><span class="p">()</span>
+        <span class="n">rand</span> <span class="o">=</span> <span class="n">CtrDrbg</span><span class="p">()</span>
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="n">rand</span><span class="p">)</span>
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">setup_defaults</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">key_provider</span><span class="o">.</span><span class="n">export_private_key</span><span class="p">(</span><span class="n">private_key</span><span class="o">.</span><span class="n">private_key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.export_public_key"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.export_public_key">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">export_public_key</span><span class="p">(</span><span class="n">public_key</span><span class="p">):</span>
+        <span class="c1"># type: (VirgilPrivateKey) -&gt; Union[Tuple[int], bytearray]</span>
+        <span class="sd">&quot;&quot;&quot;Exports the Public key into material representation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            public_key: public key for export.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Key material representation bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key_provider</span> <span class="o">=</span> <span class="n">KeyProvider</span><span class="p">()</span>
+        <span class="n">rand</span> <span class="o">=</span> <span class="n">CtrDrbg</span><span class="p">()</span>
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="n">rand</span><span class="p">)</span>
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">setup_defaults</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">key_provider</span><span class="o">.</span><span class="n">export_public_key</span><span class="p">(</span><span class="n">public_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.extract_public_key"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.extract_public_key">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">extract_public_key</span><span class="p">(</span><span class="n">private_key</span><span class="p">):</span>
+        <span class="c1"># type: (VirgilPrivateKey) -&gt; VirgilPublicKey</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the Public key from Private key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            private_key: source private key for extraction.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Exported public key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">VirgilPublicKey</span><span class="p">(</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="n">private_key</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="n">public_key</span><span class="o">=</span><span class="n">private_key</span><span class="o">.</span><span class="n">private_key</span><span class="o">.</span><span class="n">extract_public_key</span><span class="p">(),</span>
+            <span class="n">key_type</span><span class="o">=</span><span class="n">private_key</span><span class="o">.</span><span class="n">key_type</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.encrypt"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.encrypt">[docs]</a>    <span class="k">def</span> <span class="nf">encrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+        <span class="c1"># type: (Union[Tuple[int], List[int], bytearray], List[VirgilPublicKey]) -&gt; Union[Tuple[int], bytearray]</span>
+        <span class="sd">&quot;&quot;&quot;Encrypts the specified data using recipients Public keys.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: raw data bytes for encryption.</span>
+<span class="sd">            recipients: list of recipients&#39; public keys.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Encrypted data bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">aes_gcm</span> <span class="o">=</span> <span class="n">Aes256Gcm</span><span class="p">()</span>
+        <span class="n">cipher</span> <span class="o">=</span> <span class="n">RecipientCipher</span><span class="p">()</span>
+        <span class="n">cipher</span><span class="o">.</span><span class="n">set_encryption_cipher</span><span class="p">(</span><span class="n">aes_gcm</span><span class="p">)</span>
+        <span class="n">cipher</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">public_key</span> <span class="ow">in</span> <span class="n">recipients</span><span class="p">:</span>
+            <span class="n">cipher</span><span class="o">.</span><span class="n">add_key_recipient</span><span class="p">(</span><span class="n">public_key</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">public_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">)</span>
+
+        <span class="n">cipher</span><span class="o">.</span><span class="n">start_encryption</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">pack_message_info</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">process_encryption</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">finish_encryption</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.decrypt"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.decrypt">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">private_key</span><span class="p">):</span>
+        <span class="c1"># type: (Union[Tuple[int], List[int]], VirgilPrivateKey) -&gt; Tuple[int]</span>
+        <span class="sd">&quot;&quot;&quot;Decrypts the specified data using Private key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: encrypted data bytes for decryption.</span>
+<span class="sd">            private_key: private key for decryption.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Decrypted data bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cipher</span> <span class="o">=</span> <span class="n">RecipientCipher</span><span class="p">()</span>
+
+        <span class="n">cipher</span><span class="o">.</span><span class="n">start_decryption_with_key</span><span class="p">(</span>
+            <span class="n">private_key</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="n">private_key</span><span class="o">.</span><span class="n">private_key</span><span class="p">,</span>
+            <span class="nb">bytearray</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">process_decryption</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">finish_decryption</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.sign_and_encrypt"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.sign_and_encrypt">[docs]</a>    <span class="k">def</span> <span class="nf">sign_and_encrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">private_key</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+        <span class="c1"># type: (Union[Tuple[int], List[int], bytearray], VirgilPrivateKey, List[VirgilPublicKey]) -&gt; Union[Tuple[int], bytearray]</span>
+        <span class="sd">&quot;&quot;&quot;Signs and encrypts the data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: data bytes for signing and encryption.</span>
+<span class="sd">            private_key: sender private key</span>
+<span class="sd">            recipients: list of recipients&#39; public keys.</span>
+<span class="sd">                Used for data encryption.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Signed and encrypted data bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_signature</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">private_key</span><span class="p">)</span>
+
+        <span class="n">aes_gcm</span> <span class="o">=</span> <span class="n">Aes256Gcm</span><span class="p">()</span>
+        <span class="n">cipher</span> <span class="o">=</span> <span class="n">RecipientCipher</span><span class="p">()</span>
+
+        <span class="n">cipher</span><span class="o">.</span><span class="n">set_encryption_cipher</span><span class="p">(</span><span class="n">aes_gcm</span><span class="p">)</span>
+        <span class="n">cipher</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="n">recipients</span><span class="p">:</span>
+            <span class="n">cipher</span><span class="o">.</span><span class="n">add_key_recipient</span><span class="p">(</span><span class="n">recipient</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">recipient</span><span class="o">.</span><span class="n">public_key</span><span class="p">)</span>
+
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">custom_params</span><span class="p">()</span>
+        <span class="n">cp</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="n">VirgilCrypto</span><span class="o">.</span><span class="n">CUSTOM_PARAM_KEY_SIGNATURE</span><span class="p">,</span> <span class="n">signature</span><span class="p">)</span>
+        <span class="n">cp</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="n">VirgilCrypto</span><span class="o">.</span><span class="n">CUSTOM_PARAM_KEY_SIGNER_ID</span><span class="p">,</span> <span class="n">private_key</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+
+        <span class="n">cipher</span><span class="o">.</span><span class="n">start_encryption</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">pack_message_info</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">process_encryption</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">finish_encryption</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.decrypt_and_verify"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.decrypt_and_verify">[docs]</a>    <span class="k">def</span> <span class="nf">decrypt_and_verify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">private_key</span><span class="p">,</span> <span class="n">signers_public_keys</span><span class="p">):</span>
+        <span class="c1"># type: (Union[Tuple[int], List[int], bytearray], VirgilPrivateKey, Union[List[VirgilPublicKey], VirgilPublicKey]) -&gt; Union[Tuple[int], bytearray]</span>
+        <span class="sd">&quot;&quot;&quot;Decrypts and verifies the data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: encrypted data bytes.</span>
+<span class="sd">            private_key: private key for decryption.</span>
+<span class="sd">            signers_public_keys: List of possible signers public keys.</span>
+<span class="sd">                                 WARNING: data should have signature of ANY public key from list.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Decrypted data bytes.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            VirgilCryptoError: if signature is not verified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">cipher</span> <span class="o">=</span> <span class="n">RecipientCipher</span><span class="p">()</span>
+
+        <span class="n">cipher</span><span class="o">.</span><span class="n">start_decryption_with_key</span><span class="p">(</span><span class="n">private_key</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">private_key</span><span class="o">.</span><span class="n">private_key</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">())</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">process_decryption</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">finish_decryption</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">signers_public_keys</span><span class="p">,</span> <span class="n">VirgilPublicKey</span><span class="p">):</span>
+            <span class="n">signer_public_key</span> <span class="o">=</span> <span class="n">signers_public_keys</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">signer_id</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">cipher</span><span class="o">.</span><span class="n">custom_params</span><span class="p">()</span><span class="o">.</span><span class="n">find_data</span><span class="p">(</span><span class="n">VirgilCrypto</span><span class="o">.</span><span class="n">CUSTOM_PARAM_KEY_SIGNER_ID</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">VirgilCryptoErrors</span><span class="o">.</span><span class="n">SIGNER_NOT_FOUND</span>
+
+            <span class="n">filtered_public_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">identifier</span> <span class="o">==</span> <span class="n">signer_id</span><span class="p">,</span> <span class="n">signers_public_keys</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">filtered_public_keys</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">VirgilCryptoErrors</span><span class="o">.</span><span class="n">SIGNER_NOT_FOUND</span>
+
+            <span class="n">signer_public_key</span> <span class="o">=</span> <span class="n">filtered_public_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">signature</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">cipher</span><span class="o">.</span><span class="n">custom_params</span><span class="p">()</span><span class="o">.</span><span class="n">find_data</span><span class="p">(</span><span class="n">VirgilCrypto</span><span class="o">.</span><span class="n">CUSTOM_PARAM_KEY_SIGNATURE</span><span class="p">))</span>
+
+        <span class="n">is_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verify_signature</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">signature</span><span class="p">,</span> <span class="n">signer_public_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">VirgilCryptoErrors</span><span class="o">.</span><span class="n">SIGNATURE_NOT_VERIFIED</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.generate_signature"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.generate_signature">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">generate_signature</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">private_key</span><span class="p">):</span>
+        <span class="c1"># type: (Union[Tuple[int], List[int], bytearray], VirgilPrivateKey) -&gt; Union[Tuple[int], bytearray]</span>
+        <span class="sd">&quot;&quot;&quot;Generates digital signature of data using private key</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: raw data bytes for signing.</span>
+<span class="sd">            private_key: private key for signing.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Signature bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signer</span> <span class="o">=</span> <span class="n">Signer</span><span class="p">()</span>
+        <span class="n">rand</span> <span class="o">=</span> <span class="n">CtrDrbg</span><span class="p">()</span>
+        <span class="n">rand</span><span class="o">.</span><span class="n">setup_defaults</span><span class="p">()</span>
+        <span class="n">signer</span><span class="o">.</span><span class="n">set_hash</span><span class="p">(</span><span class="n">Sha512</span><span class="p">())</span>
+        <span class="n">signer</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="n">rand</span><span class="p">)</span>
+        <span class="n">signer</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">signer</span><span class="o">.</span><span class="n">append_data</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">signer</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">private_key</span><span class="o">.</span><span class="n">private_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">signature</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.verify_signature"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.verify_signature">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">verify_signature</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">signature</span><span class="p">,</span> <span class="n">public_key</span><span class="p">):</span>
+        <span class="c1"># type: (Union[Tuple[int], List[int], bytearray], Union[Tuple[int], List[int], bytearray], VirgilPublicKey) -&gt; bool</span>
+        <span class="sd">&quot;&quot;&quot;Verifies the specified signature using original data and signer&#39;s public key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: original data bytes for verification.</span>
+<span class="sd">            signature: signature bytes for verification.</span>
+<span class="sd">            public_key: signer public key for verification.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if signature is valid, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verifier</span> <span class="o">=</span> <span class="n">Verifier</span><span class="p">()</span>
+        <span class="n">verifier</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">signature</span><span class="p">))</span>
+        <span class="n">verifier</span><span class="o">.</span><span class="n">append_data</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">verifier</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">public_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.encrypt_stream"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.encrypt_stream">[docs]</a>    <span class="k">def</span> <span class="nf">encrypt_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_stream</span><span class="p">,</span> <span class="n">output_stream</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+        <span class="c1"># type: (io.IOBase, io.IOBase, List[VirgilPublicKey]) -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;Encrypts the specified stream using recipients Public keys.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_stream: readable stream containing input data.</span>
+<span class="sd">            output_stream: writable stream for output.</span>
+<span class="sd">            recipients: list of recipients&#39; public keys.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">aes_gcm</span> <span class="o">=</span> <span class="n">Aes256Gcm</span><span class="p">()</span>
+        <span class="n">cipher</span> <span class="o">=</span> <span class="n">RecipientCipher</span><span class="p">()</span>
+
+        <span class="n">cipher</span><span class="o">.</span><span class="n">set_encryption_cipher</span><span class="p">(</span><span class="n">aes_gcm</span><span class="p">)</span>
+        <span class="n">cipher</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">public_key</span> <span class="ow">in</span> <span class="n">recipients</span><span class="p">:</span>
+            <span class="n">cipher</span><span class="o">.</span><span class="n">add_key_recipient</span><span class="p">(</span><span class="n">public_key</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">public_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">)</span>
+
+        <span class="n">cipher</span><span class="o">.</span><span class="n">start_encryption</span><span class="p">()</span>
+
+        <span class="n">msg_info</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">pack_message_info</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">output_stream</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="n">output_stream</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+        <span class="n">output_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg_info</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__for_each_chunk_output</span><span class="p">(</span><span class="n">input_stream</span><span class="p">,</span> <span class="n">output_stream</span><span class="p">,</span> <span class="n">cipher</span><span class="o">.</span><span class="n">process_encryption</span><span class="p">)</span>
+
+        <span class="n">finish</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">finish_encryption</span><span class="p">()</span>
+
+        <span class="n">output_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">finish</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.decrypt_stream"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.decrypt_stream">[docs]</a>    <span class="k">def</span> <span class="nf">decrypt_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_stream</span><span class="p">,</span> <span class="n">output_stream</span><span class="p">,</span> <span class="n">private_key</span><span class="p">):</span>
+        <span class="c1"># type: (io.IOBase, io.IOBase, VirgilPrivateKey) -&gt; None</span>
+        <span class="sd">&quot;&quot;&quot;Decrypts the specified stream using Private key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_stream: readable stream containing input data.</span>
+<span class="sd">            output_stream: writable stream for output.</span>
+<span class="sd">            private_key: private key for decryption.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cipher</span> <span class="o">=</span> <span class="n">RecipientCipher</span><span class="p">()</span>
+        <span class="n">cipher</span><span class="o">.</span><span class="n">start_decryption_with_key</span><span class="p">(</span>
+            <span class="n">private_key</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="n">private_key</span><span class="o">.</span><span class="n">private_key</span><span class="p">,</span>
+            <span class="nb">bytearray</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__for_each_chunk_output</span><span class="p">(</span><span class="n">input_stream</span><span class="p">,</span> <span class="n">output_stream</span><span class="p">,</span> <span class="n">cipher</span><span class="o">.</span><span class="n">process_decryption</span><span class="p">)</span>
+
+        <span class="n">finish</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">finish_decryption</span><span class="p">()</span>
+        <span class="n">output_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">finish</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.generate_stream_signature"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.generate_stream_signature">[docs]</a>    <span class="k">def</span> <span class="nf">generate_stream_signature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_stream</span><span class="p">,</span> <span class="n">private_key</span><span class="p">):</span>
+        <span class="c1"># type: (Type[io.IOBase], VirgilPrivateKey) -&gt; Tuple(*int)</span>
+        <span class="sd">&quot;&quot;&quot;Signs the specified stream using Private key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_stream: readable stream containing input data.</span>
+<span class="sd">            private_key: private key for signing.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Signature bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signer</span> <span class="o">=</span> <span class="n">Signer</span><span class="p">()</span>
+        <span class="n">rand</span> <span class="o">=</span> <span class="n">CtrDrbg</span><span class="p">()</span>
+        <span class="n">rand</span><span class="o">.</span><span class="n">setup_defaults</span><span class="p">()</span>
+        <span class="n">signer</span><span class="o">.</span><span class="n">set_random</span><span class="p">(</span><span class="n">rand</span><span class="p">)</span>
+        <span class="n">signer</span><span class="o">.</span><span class="n">set_hash</span><span class="p">(</span><span class="n">Sha512</span><span class="p">())</span>
+        <span class="n">signer</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__for_each_chunk_input</span><span class="p">(</span><span class="n">input_stream</span><span class="p">,</span> <span class="n">signer</span><span class="o">.</span><span class="n">append_data</span><span class="p">)</span>
+
+        <span class="n">signature</span> <span class="o">=</span> <span class="n">signer</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">private_key</span><span class="o">.</span><span class="n">private_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">signature</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.verify_stream_signature"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.verify_stream_signature">[docs]</a>    <span class="k">def</span> <span class="nf">verify_stream_signature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_stream</span><span class="p">,</span> <span class="n">signature</span><span class="p">,</span> <span class="n">signer_public_key</span><span class="p">):</span>
+        <span class="c1"># type: (io.IOBase, Union[Tuple[int], List[int], bytearray], VirgilPublicKey) -&gt; bool</span>
+        <span class="sd">&quot;&quot;&quot;Verifies the specified signature using original stream and signer&#39;s Public key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_stream: readable stream containing input data.</span>
+<span class="sd">            signature: signature bytes for verification.</span>
+<span class="sd">            signer_public_key: signer public key for verification.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if signature is valid, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verifier</span> <span class="o">=</span> <span class="n">Verifier</span><span class="p">()</span>
+        <span class="n">verifier</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">signature</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__for_each_chunk_input</span><span class="p">(</span><span class="n">input_stream</span><span class="p">,</span> <span class="n">verifier</span><span class="o">.</span><span class="n">append_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">verifier</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">signer_public_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.compute_hash"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.compute_hash">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_hash</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">HashAlgorithm</span><span class="o">.</span><span class="n">SHA512</span><span class="p">):</span>
+        <span class="c1"># type: (Union[Tuple[int], List[int], bytearray], int) -&gt; Tuple[int]</span>
+        <span class="sd">&quot;&quot;&quot;Computes the hash of specified data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: data bytes for fingerprint calculation.</span>
+<span class="sd">            algorithm: hashing algorithm.</span>
+<span class="sd">                The possible values can be found in HashAlgorithm enum.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Hash bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">native_algorithm</span> <span class="o">=</span> <span class="n">HashAlgorithm</span><span class="o">.</span><span class="n">convert_to_native</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span>
+        <span class="n">native_hasher</span> <span class="o">=</span> <span class="n">native_algorithm</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">native_hasher</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.compute_public_key_identifier"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.compute_public_key_identifier">[docs]</a>    <span class="k">def</span> <span class="nf">compute_public_key_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">public_key</span><span class="p">):</span>
+        <span class="c1"># type: (PublicKey) -&gt; Tuple[int]</span>
+        <span class="sd">&quot;&quot;&quot;Computes public key identifier.</span>
+
+<span class="sd">        Note: Takes first 8 bytes of SHA512 of public key DER if use_sha256_fingerprints=False</span>
+<span class="sd">            and SHA256 of public key der if use_sha256_fingerprints=True</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            public_key: public key for compute.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Public key identifier.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key_provider</span> <span class="o">=</span> <span class="n">KeyProvider</span><span class="p">()</span>
+        <span class="n">key_provider</span><span class="o">.</span><span class="n">setup_defaults</span><span class="p">()</span>
+
+        <span class="n">public_key_data</span> <span class="o">=</span> <span class="n">key_provider</span><span class="o">.</span><span class="n">export_public_key</span><span class="p">(</span><span class="n">public_key</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_sha256_fingerprints</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_hash</span><span class="p">(</span><span class="n">public_key_data</span><span class="p">,</span> <span class="n">HashAlgorithm</span><span class="o">.</span><span class="n">SHA256</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_hash</span><span class="p">(</span><span class="n">public_key_data</span><span class="p">)[:</span><span class="mi">8</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="VirgilCrypto.generate_random_data"><a class="viewcode-back" href="../../api-doc/virgil_crypto.crypto.html#virgil_crypto.crypto.VirgilCrypto.generate_random_data">[docs]</a>    <span class="k">def</span> <span class="nf">generate_random_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_size</span><span class="p">):</span>
+        <span class="c1"># type: (int) -&gt; Tuple[int]</span>
+        <span class="sd">&quot;&quot;&quot;Generates cryptographically secure random bytes. Uses CTR DRBG</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_size: size needed</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Random data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">data_size</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__for_each_chunk_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_stream</span><span class="p">,</span> <span class="n">stream_callback</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">input_stream</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="n">input_stream</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">input_stream</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">stream_callback</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__for_each_chunk_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_stream</span><span class="p">,</span> <span class="n">output_stream</span><span class="p">,</span> <span class="n">stream_callback</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">input_stream</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="n">input_stream</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">output_stream</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="n">output_stream</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">input_stream</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">output_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">stream_callback</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Virgil Security
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

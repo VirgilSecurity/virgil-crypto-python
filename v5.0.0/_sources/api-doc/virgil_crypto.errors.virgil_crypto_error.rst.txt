@@ -1,0 +1,7 @@
+virgil\_crypto.errors.virgil\_crypto\_error module
+==================================================
+
+.. automodule:: virgil_crypto.errors.virgil_crypto_error
+   :members:
+   :undoc-members:
+   :show-inheritance:

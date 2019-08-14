@@ -1,0 +1,7 @@
+virgil\_crypto.hashes.hash\_algorithm module
+============================================
+
+.. automodule:: virgil_crypto.hashes.hash_algorithm
+   :members:
+   :undoc-members:
+   :show-inheritance:

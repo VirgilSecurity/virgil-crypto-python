@@ -1,0 +1,7 @@
+virgil\_crypto.access\_token\_signer module
+===========================================
+
+.. automodule:: virgil_crypto.access_token_signer
+   :members:
+   :undoc-members:
+   :show-inheritance:

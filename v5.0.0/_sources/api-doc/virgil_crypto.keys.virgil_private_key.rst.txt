@@ -1,0 +1,7 @@
+virgil\_crypto.keys.virgil\_private\_key module
+===============================================
+
+.. automodule:: virgil_crypto.keys.virgil_private_key
+   :members:
+   :undoc-members:
+   :show-inheritance:

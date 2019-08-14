@@ -1,0 +1,20 @@
+virgil\_crypto.keys package
+===========================
+
+Submodules
+----------
+
+.. toctree::
+
+   virgil_crypto.keys.key_pair_type
+   virgil_crypto.keys.virgil_key_pair
+   virgil_crypto.keys.virgil_private_key
+   virgil_crypto.keys.virgil_public_key
+
+Module contents
+---------------
+
+.. automodule:: virgil_crypto.keys
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+virgil\_crypto.keys.key\_pair\_type module
+==========================================
+
+.. automodule:: virgil_crypto.keys.key_pair_type
+   :members:
+   :undoc-members:
+   :show-inheritance:

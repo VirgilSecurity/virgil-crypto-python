@@ -1,0 +1,17 @@
+virgil\_crypto.errors package
+=============================
+
+Submodules
+----------
+
+.. toctree::
+
+   virgil_crypto.errors.virgil_crypto_error
+
+Module contents
+---------------
+
+.. automodule:: virgil_crypto.errors
+   :members:
+   :undoc-members:
+   :show-inheritance:

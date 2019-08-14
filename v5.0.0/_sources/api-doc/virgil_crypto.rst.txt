@@ -1,0 +1,28 @@
+virgil\_crypto package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+
+   virgil_crypto.errors
+   virgil_crypto.hashes
+   virgil_crypto.keys
+
+Submodules
+----------
+
+.. toctree::
+
+   virgil_crypto.access_token_signer
+   virgil_crypto.card_crypto
+   virgil_crypto.crypto
+
+Module contents
+---------------
+
+.. automodule:: virgil_crypto
+   :members:
+   :undoc-members:
+   :show-inheritance:
