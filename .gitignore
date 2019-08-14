@@ -9,3 +9,4 @@ virgil_crypto/*virgil_crypto_python*
 .DS_Store
 /doc-source/api-doc/
 generated-docs/
+docs/

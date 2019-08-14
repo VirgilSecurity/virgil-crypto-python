@@ -264,8 +264,7 @@ class VirgilCrypto(object):
 
         return result
 
-    @staticmethod
-    def decrypt(data, private_key):
+    def decrypt(self, data, private_key):
         # type: (Union[Tuple[int], List[int]], VirgilPrivateKey) -> Tuple[int]
         """Decrypts the specified data using Private key.
 
@@ -277,6 +276,7 @@ class VirgilCrypto(object):
             Decrypted data bytes.
         """
         cipher = RecipientCipher()
+        cipher.set_random(self.rng)
 
         cipher.start_decryption_with_key(
             private_key.identifier,
