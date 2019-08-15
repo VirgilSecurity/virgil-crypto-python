@@ -11,53 +11,11 @@ python:
 
 env:
   global:
-    - REPO=VirgilSecurity/virgil-sdk-python
+    - REPO=VirgilSecurity/virgil-crypto-python
     - GIT_TAG=$TRAVIS_TAG
     - GIT_COMMIT=$TRAVIS_COMMIT
     - GIT_BRANCH=$TRAVIS_BRANCH
     - OS_NAME=$(echo $TRAVIS_OS_NAME)
-
-matrix:
-  include:
-    - os: osx
-      language: generic
-      env: PYTHON=2.7.15 PYTHON_VERSION=2.7 OS_NAME=darwin
-    - os: osx
-      language: generic
-      env: PYTHON=3.4.9 PYTHON_VERSION=3.4 OS_NAME=darwin
-    - os: osx
-      language: generic
-      env: PYTHON=3.5.6 PYTHON_VERSION=3.5 OS_NAME=darwin
-    - os: osx
-      language: generic
-      env: PYTHON=3.6.7 PYTHON_VERSION=3.6 OS_NAME=darwin
-    - os: osx
-      language: generic
-      env: PYTHON=3.7.1 PYTHON_VERSION=3.7 OS_NAME=darwin
-    - os: windows
-      language: shell
-      before_install:
-        - choco install python2
-        - python -m pip install --upgrade pip
-      env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
-    - os: windows
-      language: shell
-      before_install:
-        - choco install python --version 3.5.4
-        - python -m pip install --upgrade pip
-      env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
-    - os: windows
-      language: shell
-      before_install:
-        - choco install python --version 3.6.7
-        - python -m pip install --upgrade pip
-      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
-    - os: windows
-      language: shell
-      before_install:
-        - choco install python --version 3.7.2
-        - python -m pip install --upgrade pip
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 
 before_install: |
@@ -73,6 +31,7 @@ before_install: |
     source venv/bin/activate
   fi
   python --version
+  pip --version
 
 install:
   - pip install virgil-crypto-lib || pip3 install virgil-crypto-lib
@@ -82,22 +41,97 @@ script:
   - pwd
   - python -m unittest discover -s virgil_crypto/tests -p "*_test.py"
 
-after_success: |
-  if [[ $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-    make docs
-  fi
+tests: &tests
+  stage: test
 
+jobs:
+  include:
+    - <<: *tests
+      os: osx
+      language: generic
+      env: PYTHON=2.7.15 PYTHON_VERSION=2.7
 
-deploy:
-  # Upload docs to gh-pages
-  - provider: pages
-    skip_cleanup: true
-    github-token: $GITHUB_ACCESS_TOKEN
-    local_dir: "docs"
-    on:
-      repo: $REPO
-      tags: true
-      condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+
+    - <<: *tests
+      os: osx
+      language: generic
+      env: PYTHON=3.4.9 PYTHON_VERSION=3.4
+
+    - <<: *tests
+      os: osx
+      language: generic
+      env: PYTHON=3.5.6 PYTHON_VERSION=3.5
+
+    - <<: *tests
+      os: osx
+      language: generic
+      env: PYTHON=3.6.7 PYTHON_VERSION=3.6
+
+    - <<: *tests
+      os: osx
+      language: generic
+      env: PYTHON=3.7.1 PYTHON_VERSION=3.7
+
+    - <<: *tests
+      os: windows
+      language: shell
+      before_install:
+        - choco install python2
+        - python -m pip install --upgrade pip
+      env:
+        - PATH=/c/Python27:/c/Python27/Scripts:$PATH
+        - HOMEPATH=\\Users\\travis
+        - HOMEDRIVE='C:'
+
+    - <<: *tests
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.5.4
+        - python -m pip install --upgrade pip
+      env:
+        - PATH=/c/Python35:/c/Python35/Scripts:$PATH
+        - HOMEPATH=\\Users\\travis
+        - HOMEDRIVE='C:'
+
+    - <<: *tests
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.6.7
+        - python -m pip install --upgrade pip
+      env:
+        - PATH=/c/Python36:/c/Python36/Scripts:$PATH
+        - HOMEPATH=\\Users\\travis
+        - HOMEDRIVE='C:'
+
+    - <<: *tests
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.7.2
+        - python -m pip install --upgrade pip
+      env:
+        - PATH=/c/Python37:/c/Python37/Scripts:$PATH
+        - HOMEPATH=\\Users\\travis
+        - HOMEDRIVE='C:'
+
+    - stage: generate docs
+      python: 3.5
+      script: make docs
+      if: tag =~ /^v[0-9]+\.[0-9]+\.[0-9]+/
+
+    - stage: deploy docs
+      script: skip
+      deploy:
+        # Upload docs to gh-pages
+        - provider: pages
+          skip_cleanup: true
+          github-token: $GITHUB_ACCESS_TOKEN
+          local_dir: "docs"
+          on:
+            repo: $REPO
+            tags: true
+            condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+
 
 notifications:
   email:
