@@ -6,22 +6,21 @@
 
 ## Introduction
 
-Virgil Crypto Library Python is a stack of security libraries (ECIES with Crypto Agility wrapped in Virgil Cryptogram) and an open-source high-level [cryptographic library](https://github.com/VirgilSecurity/virgil-crypto) that allows you to perform all necessary operations for securely storing and transferring data in your digital solutions. Crypto Library is written in C++ and is suitable for mobile and server platforms.
+Virgil Crypto Library Python is a wrapper over [Virgil Crypto Library C](https://github.com/VirgilSecurity/virgil-crypto-c). It provides a bunch of custom hybrid algorithms that combine different crypto algorithms to solve common complex cryptographic problems in an easy way. That eliminates the requirement for developers to have strong cryptographic skills in order to add a security layer to their applications.
 
 ## Library purposes
 * Asymmetric Key Generation
 * Encryption/Decryption of data and streams
 * Generation/Verification of digital signatures
 * Double Ratchet algorithm support
-* **Post quantum algorithms support**: [Round5](https://round5.org/) (encryption) and [Falcon](https://falcon-sign.info/) (signature) 
+* **Post-quantum algorithms support**: [Round5](https://round5.org/) (encryption) and [Falcon](https://falcon-sign.info/) (signature) 
 * Crypto for using [Virgil Core SDK](https://github.com/VirgilSecurity/virgil-sdk-python)
 
 ## Installation
 
 ### Installing prerequisites
 
-Install latest pip distribution: download [get-pip.py](https://bootstrap.pypa.io/get-pip.py)
-and run it using the python interpreter.
+Install latest pip distribution: download [get-pip.py](https://bootstrap.pypa.io/get-pip.py) and run it using the python interpreter.
 
 ### Installing from wheel binary packages
 
