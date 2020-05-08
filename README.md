@@ -1,24 +1,41 @@
-# Virgil Security Python Crypto Library 
+# Virgil Crypto Library Python
 
 [![Travis (.com)](https://img.shields.io/travis/com/VirgilSecurity/virgil-crypto-python/master.svg)](https://travis-ci.com/VirgilSecurity/virgil-crypto-python) [![PyPI](https://img.shields.io/pypi/v/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/wheel/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto) [![PyPI](https://img.shields.io/pypi/pyversions/virgil-crypto.svg)](https://pypi.python.org/pypi/virgil-crypto)
 
-### [Introduction](#introduction) | [Library purposes](#library-purposes) | [Usage examples](#usage-examples) | [Installation](#installation) | [Docs](#docs) | [License](#license) | [Contacts](#support)
+[Introduction](#introduction) | [Library purposes](#library-purposes) | [Installation](#installation) | [Usage examples](#usage-examples) | [Docs](#docs) | [License](#license) | [Contacts](#support)
 
 ## Introduction
-VirgilCrypto is a stack of security libraries (ECIES with Crypto Agility wrapped in Virgil Cryptogram) and an open-source high-level [cryptographic library](https://github.com/VirgilSecurity/virgil-crypto) that allows you to perform all necessary operations for securely storing and transferring data in your digital solutions. Crypto Library is written in C++ and is suitable for mobile and server platforms.
 
-Virgil Security, Inc., guides software developers into the forthcoming security world in which everything will be encrypted (and passwords will be eliminated). In this world, the days of developers having to raise millions of dollars to build a secure chat, secure email, secure file-sharing, or a secure anything have come to an end. Now developers can instead focus on building features that give them a competitive market advantage while end-users can enjoy the privacy and security they increasingly demand.
+Virgil Crypto Library Python is a wrapper over [Virgil Crypto Library C](https://github.com/VirgilSecurity/virgil-crypto-c). It provides a bunch of custom hybrid algorithms that combine different crypto algorithms to solve common complex cryptographic problems in an easy way. That eliminates the requirement for developers to have strong cryptographic skills in order to add a security layer to their applications.
 
 ## Library purposes
 * Asymmetric Key Generation
-* Encryption/Decryption of data
+* Encryption/Decryption of data and streams
 * Generation/Verification of digital signatures
+* Double Ratchet algorithm support
+* **Post-quantum algorithms support**: [Round5](https://round5.org/) (encryption) and [Falcon](https://falcon-sign.info/) (signature) 
+* Crypto for using [Virgil Core SDK](https://github.com/VirgilSecurity/virgil-sdk-python)
+
+## Installation
+
+### Installing prerequisites
+
+Install latest pip distribution: download [get-pip.py](https://bootstrap.pypa.io/get-pip.py) and run it using the python interpreter.
+
+### Installing from wheel binary packages
+
+We provide binary packages for all the supported platforms.
+Use pip to install the wheel binary packages:
+
+```bash
+pip install virgil-crypto
+```
 
 ## Usage examples
 
-#### Generate a key pair
+### Generate a key pair
 
-Generate a Private Key with the default algorithm (EC_X25519):
+Generate a private key using the default algorithm (EC_X25519):
 
 ```python
 from virgil_crypto import VirgilCrypto
@@ -27,9 +44,9 @@ crypto = VirgilCrypto()
 key_pair = crypto.generate_key_pair()
 ```
 
-#### Generate and verify_signature a signature
+### Generate and verify a signature
 
-Generate signature and generate_signature data with a private key:
+Generate signature and sign data with a private key:
 
 ```python
 from virgil_crypto import VirgilCrypto
@@ -54,9 +71,9 @@ crypto = VirgilCrypto()
 verified = crypto.verify_signature(data_to_sign, signature, sender_public_key)
 ```
 
-#### Encrypt and decrypt data
+### Encrypt and decrypt data
 
-Encrypt data with a Public Key:
+Encrypt data with a public key:
 
 ```python
 from virgil_crypto import VirgilCrypto
@@ -70,7 +87,7 @@ reciver_list = [reciver_public_key]
 encrypted_data = crypto.encrypt(data_to_encrypt, *reciver_list)
 ```
 
-Decrypt the encrypted data with a Private Key:
+Decrypt the encrypted data with a private key:
 
 ```python
 from virgil_crypto import VirgilCrypto
@@ -81,29 +98,49 @@ decrypted_data = crypto.decrypt(encrypted_data, reciver_private_key)
 decrypted_message = bytes(decrypted_data).decode()
 ```
 
-Need more examples? Visit our [developer documentation](https://developer.virgilsecurity.com/docs/how-to#cryptography).
+### Import and export keys
 
-  
-## Installation
+Export keys:
 
-### Installing prerequisites
+```
+crypto = VirgilCrypto()
 
-Install latest pip distribution: download [get-pip.py](https://bootstrap.pypa.io/get-pip.py)
-and run it using the python interpreter.
+# generate a Key Pair
+key_pair = crypto.generate_keys()
 
-### Installing from wheel binary packages
+# export a Private key
+private_key_data = crypto.export_private_key(key_pair.private_key, "[YOUR_PASSWORD]")
+base64.b64encode(private_key_data)
 
-We provide binary packages for all the supported platforms.
-Use pip to install the wheel binary packages:
+# export a Public key
+public_key_data = crypto.export_public_key(key_pair.public_key, "[YOUR_PASSWORD]")
+base64.b64encode(public_key_data)
+```
 
-```bash
-pip install virgil-crypto
+Import keys:
+
+```
+crypto = VirgilCrypto()
+private_key_str = "MIGhMF0GCSqGSIb3DQEFDTBQMC8GCSqGSIb3DQEFDDAiBBBtfBoM7VfmWPlvyHuGWvMSAgIZ6zAKBggqhkiG9w0CCjAdBglghkgBZQMEASoEECwaKJKWFNn3OMVoUXEcmqcEQMZ+WWkmPqzwzJXGFrgS/+bEbr2DvreVgEUiLKrggmXL9ZKugPKG0VhNY0omnCNXDzkXi5dCFp25RLqbbSYsCyw="
+private_key_data = base64.b64decode(private_key_str)
+
+# import a Private key
+crypto.import_private_key(private_key_data, "[YOUR_PASSWORD]")
+
+//-----------------------------------------------------
+
+crypto = VirgilCrypto()
+public_key_str = "MCowBQYDK2VwAyEA9IVUzsQENtRVzhzraTiEZZy7YLq5LDQOXGQG/q0t0kE="
+public_key_data = base64.b64decode(public_key_str)
+
+# import a Public key
+crypto.import_public_key(public_key_data)
 ```
 
 ## Docs
 - [API Reference](http://virgilsecurity.github.io/virgil-crypto-python/)
 - [Crypto Core Library](https://github.com/VirgilSecurity/virgil-crypto)
-- [More usage examples](https://developer.virgilsecurity.com/docs/how-to#cryptography)
+- [Developer Documentation](https://developer.virgilsecurity.com/docs/)
 
 ## License
 This library is released under the [3-clause BSD License](LICENSE).
